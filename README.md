@@ -7,7 +7,7 @@ Tensorflow the pipeline described in the
 [Colorful Image Colorization peper](https://arxiv.org/pdf/1603.08511.pdf)
 
 Team members:
-* [Clara Bonin](https://github.com/clarabonnin)
+* [Clara Bonnin](https://github.com/clarabonnin)
 * [Mariona Carós](https://github.com/marionacaros)
 * [Adrià Barja](https://github.com/adribarja)
 * [Joan Marco](https://github.com/JMarcoRimmek)
