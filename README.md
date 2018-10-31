@@ -18,6 +18,8 @@ We will be using Python 3.6 for this project. A virtual environment can
 easily be created by running:
 ```bash
 virtualenv --python=python3.6 dlai-env
+source dlai-env/bin/activate
+pip install -r requirements.txt
 ``` 
 
 In `requirements.txt` you will find any python dependency needed
