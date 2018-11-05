@@ -30,7 +30,7 @@ def categorical_crossentropy(z_true, z_predicted):
     return mean_cross_entropy
 
 
-def calculate_weights_maps(z_true, p, len_q=313, _lambda=0.5):
+def calculate_weights_maps(z_true, len_q=313, _lambda=0.5):
     """
     Calculates the weight maps
     :param z_true: [batch, dim0, dim1, num_classes]
@@ -43,7 +43,9 @@ def calculate_weights_maps(z_true, p, len_q=313, _lambda=0.5):
     batch_size = input_shape[0]
     weights_maps = np.zeros(shape=[input_shape[0], input_shape[1], input_shape[2]])
 
-    w = np.inverse((1 - _lambda) * p + _lambda / len_q)
+    p = np.load('/Users/clarabonnin/Documents/MET/DLAI/2018-dlai-team9/data/prior_probs.npy')
+
+    w = 1/((1 - _lambda) * p + _lambda / len_q)
     q = np.argmax(z_true, axis=3)  # [batch, dim0, dim1]
 
     for b in range(batch_size):
