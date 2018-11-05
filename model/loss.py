@@ -3,6 +3,7 @@ import tensorflow as tf
 import keras.backend as K
 import numpy as np
 
+
 def categorical_crossentropy(z_true, z_predicted):
     """
     Computes categorical cross-entropy loss for a softmax distribution in a hot-encoded 2D array
@@ -29,26 +30,27 @@ def categorical_crossentropy(z_true, z_predicted):
     return mean_cross_entropy
 
 
-def calculate_weights_maps(z_true, p, Q=313, _lambda=0.5):
+def calculate_weights_maps(z_true, p, len_q=313, _lambda=0.5):
     """
-
+    Calculates the weight maps
     :param z_true: [batch, dim0, dim1, num_classes]
     :param p: smoothed empirical distribution
-    :param Q: 313 quantized levels
+    :param len_q: 313 quantized levels
     :param _lambda: 0.5
     :return: weights maps [batch, dim0, dim1]
     """
     input_shape = z_true.shape
     batch_size = input_shape[0]
-    weights_maps = np.zeros(shape=[input_shape[0],input_shape[1], input_shape[2]])
+    weights_maps = np.zeros(shape=[input_shape[0], input_shape[1], input_shape[2]])
 
-    w = np.inverse((1 - _lambda)*p + _lambda/Q)
-    q = np.argmax(z_true, axis=3) # [batch, dim0, dim1]
+    w = np.inverse((1 - _lambda) * p + _lambda / len_q)
+    q = np.argmax(z_true, axis=3)  # [batch, dim0, dim1]
 
     for b in range(batch_size):
         weights_maps[b] = w[q[b]]
 
     return weights_maps
+
 
 def categorical_crossentropy_weighted(weights_maps):
     """

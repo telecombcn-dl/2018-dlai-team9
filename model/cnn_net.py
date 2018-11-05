@@ -3,7 +3,6 @@ from keras.optimizers import Adam
 from model.loss import categorical_crossentropy, categorical_crossentropy_weighted
 
 
-
 def compile(model, lr=0.005, optimizer_name='Adam', loss_name='cross_entropy_weighted', weights=None):
     # Define Optimizer
     if optimizer_name == 'Adam':
@@ -24,9 +23,8 @@ def compile(model, lr=0.005, optimizer_name='Adam', loss_name='cross_entropy_wei
     else:
         raise ValueError('Please, specify a valid loss function')
 
-    # Define Metrics
-    metrics = [raw_accuracy]
-
+    # TODO: Define Metrics
+    # metrics = [raw_accuracy]
 
     model.compile(
         optimizer=optimizer,
