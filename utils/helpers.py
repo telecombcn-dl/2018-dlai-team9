@@ -6,7 +6,8 @@ def unflatten_2d_array(pts_flt, pts_nd, axis=2):
     Unflatten a 2d array with a certain axis
     :param pts_flt: prod(N \ N_axis) x M array
     :param pts_nd: N0xN1x...xNd array
-    :param axis: integer
+    :param axis: Axis
+    :type axis: int
     :return: N0xN1x...xNd array
     """
     shape = np.array(pts_nd.shape)
