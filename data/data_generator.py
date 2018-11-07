@@ -73,7 +73,7 @@ def main1():
 def main2():
     d = Data()
     for batch in d.load_batch(batch=20):
-        print(len(batch))
+        d.show_image(batch[0])
 
 if __name__ == "__main__":
     main2()
