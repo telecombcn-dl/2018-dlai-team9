@@ -1,7 +1,7 @@
 # This file contains the CNN definition
 from keras.optimizers import Adam
 from model.loss import categorical_crossentropy, categorical_crossentropy_weighted
-from keras.layers import Input, Activation, ZeroPadding2D, BatchNormalization, Conv2D
+from keras.layers import Input, Activation, ZeroPadding2D, BatchNormalization, Conv2D, Deconv2D
 from keras.models import Model
 
 
@@ -38,7 +38,10 @@ def graph(input_shape):
     X = Conv2D(256, (3, 3), strides=(1, 1), name='conv3_1')(X)
     X = Activation('relu')(X)
     X = ZeroPadding2D((1, 1))(X)
-    X = Conv2D(256, (3, 3), strides=(2, 2), name='conv3_2')(X)
+    X = Conv2D(256, (3, 3), strides=(1, 1), name='conv3_2')(X)
+    X = Activation('relu')(X)
+    X = ZeroPadding2D((1, 1))(X)
+    X = Conv2D(256, (3, 3), strides=(2, 2), name='conv3_3')(X)
     X = Activation('relu')(X)
     X = BatchNormalization(axis=3, name='conv3_3norm')(X)  # axis=3??
 
@@ -79,28 +82,29 @@ def graph(input_shape):
     X = BatchNormalization(axis=3, name='conv6_3norm')(X)  # axis=3??
 
     # ***** conv7 *****
-    X = ZeroPadding2D((2, 2))(X)
+    X = ZeroPadding2D((1, 1))(X)
     X = Conv2D(512, (3, 3), strides=(1, 1), dilation_rate=(1, 1), name='conv7_1')(X)
     X = Activation('relu')(X)
-    X = ZeroPadding2D((2, 2))(X)
+    X = ZeroPadding2D((1, 1))(X)
     X = Conv2D(512, (3, 3), strides=(1, 1), dilation_rate=(1, 1), name='conv7_2')(X)
     X = Activation('relu')(X)
-    X = ZeroPadding2D((2, 2))(X)
+    X = ZeroPadding2D((1, 1))(X)
     X = Conv2D(512, (3, 3), strides=(1, 1), dilation_rate=(1, 1), name='conv7_3')(X)
     X = Activation('relu')(X)
     X = BatchNormalization(axis=3, name='conv7_3norm')(X)  # axis=3??
 
     # ***** conv8 *****
-    X = ZeroPadding2D((2, 2))(X)
-    X = Conv2D(256, (4, 4), strides=(2, 2), dilation_rate=(1, 1), name='conv8_1')(X)
+    X = Deconv2D(256, (4, 4), strides=(2, 2), dilation_rate=(1, 1), name='conv8_1', padding='same')(X)
     X = Activation('relu')(X)
-    X = ZeroPadding2D((2, 2))(X)
+    X = ZeroPadding2D((1, 1))(X)
     X = Conv2D(256, (3, 3), strides=(1, 1), dilation_rate=(1, 1), name='conv8_2')(X)
     X = Activation('relu')(X)
-    X = ZeroPadding2D((2, 2))(X)
+    X = ZeroPadding2D((1, 1))(X)
     X = Conv2D(256, (3, 3), strides=(1, 1), dilation_rate=(1, 1), name='conv8_3')(X)
     X = Activation('relu')(X)
-    X = BatchNormalization(axis=3, name='conv8_3norm')(X)  # axis=3??
+
+    # ***** Unary prediction *****
+    X = Conv2D(313, (1, 1), name='conv8_313')(X)
 
     model = Model(inputs=X_input, outputs=X, name='graph')
 
@@ -129,10 +133,11 @@ def compile(model, lr=0.005, optimizer_name='Adam', loss_name='cross_entropy_wei
 
     # TODO: Define Metrics
     # metrics = [raw_accuracy]
-
-    model.compile(
-        optimizer=optimizer,
-        loss=loss,
-        metrics=metrics)
+    # model.compile(optimizer=optimizer, loss=loss, metrics=metrics)
 
     return model
+
+
+if __name__ == '__main__':
+    model_graph = graph((256, 256, 1))
+    print(model_graph.summary())
