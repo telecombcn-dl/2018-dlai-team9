@@ -1,21 +1,17 @@
 # This file contains the CNN definition
 from keras.optimizers import Adam
 from model.loss import categorical_crossentropy, categorical_crossentropy_weighted
-from keras.layers import Input, Activation, ZeroPadding2D, BatchNormalization, Flatten, Conv2D
-from keras.layers import AveragePooling2D, MaxPooling2D, Dropout, GlobalMaxPooling2D, GlobalAveragePooling2D
+from keras.layers import Input, Activation, ZeroPadding2D, BatchNormalization, Conv2D
 from keras.models import Model
 
 
 def graph(input_shape):
     """
-    Implementation of the HappyModel.
-
-    Arguments:
-    input_shape -- shape of the images of the dataset
-
-    Returns:
-    model -- a Model() instance in Keras
+    This function defines the graph
+    :param input_shape: shape of the input
+    :return: a model instance in Keras
     """
+
     # Define the input placeholder as a tensor with shape input_shape.
     X_input = Input(input_shape)
 
