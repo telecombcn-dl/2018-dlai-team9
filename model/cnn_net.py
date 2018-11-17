@@ -111,6 +111,10 @@ def graph(input_shape):
     return model
 
 
+def get_model(input_shape, **kwargs):
+    return graph(input_shape)
+
+
 def compile(model, lr=0.005, optimizer_name='Adam', loss_name='cross_entropy_weighted', weights=None):
     # Define Optimizer
     if optimizer_name == 'Adam':
@@ -133,7 +137,8 @@ def compile(model, lr=0.005, optimizer_name='Adam', loss_name='cross_entropy_wei
 
     # TODO: Define Metrics
     # metrics = [raw_accuracy]
-    # model.compile(optimizer=optimizer, loss=loss, metrics=metrics)
+
+    model.compile(optimizer=optimizer, loss=loss)
 
     return model
 

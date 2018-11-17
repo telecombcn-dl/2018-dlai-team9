@@ -7,6 +7,7 @@ from skimage.transform import resize
 from skimage.color import rgb2lab, lab2rgb
 import os
 from joblib import Parallel, delayed
+from data.preprocess_data import mapped_batch
 
 
 # There are 14197122 images in imagenet
@@ -52,6 +53,39 @@ class Data(object):
                 yield np.array(return_list)
                 return_list = []
         yield np.array(return_list)
+
+    def split_train_val(self, num_images_train, train_size, purpose="train"):
+        purpose_path = self.dataset_path + '/' + purpose + '/'
+        listdir = os.listdir(purpose_path)
+        L = len(listdir)
+        if num_images_train < L:
+            L_train = int(np.round(train_size * num_images_train))
+            L_val = num_images_train - L_train
+        else:
+            L_train = int(np.round(train_size * L))
+            L_val = L - L_train
+
+        np.random.seed(42)
+        np.random.shuffle(listdir)
+        return listdir[:L_train], listdir[L_train:L_train + L_val]
+
+    def data_generator(self, listdir, purpose, batch):
+        purpose_path = self.dataset_path + '/' + purpose + '/'
+        while True:
+            for i, imdir in enumerate(listdir):
+                return_list.append(np.load(purpose_path + imdir))
+                if not (i + 1) % batch:
+                    inputs, labels = mapped_batch(return_list)
+                    inputs = np.array(inputs)
+                    labels = np.array(labels)
+                    yield (inputs, labels)
+                    return_list = []
+
+            inputs, labels = mapped_batch(return_list)
+            inputs = np.array(inputs)
+            labels = np.array(labels)
+            yield (inputs, labels)
+
 
     @staticmethod
     def show_image(img_array, encoding='RGB_norm'):

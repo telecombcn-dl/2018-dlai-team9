@@ -62,8 +62,6 @@ def categorical_crossentropy_weighted(weights_maps):
     :return: categorical xentropy function
     """
 
-    # define weights
-
     def categorical_crossentropy(y_true, y_predicted):
         """
 
