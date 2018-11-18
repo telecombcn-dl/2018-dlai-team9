@@ -30,7 +30,7 @@ def categorical_crossentropy(z_true, z_predicted):
     return mean_cross_entropy
 
 
-def calculate_weights_maps(z_true, len_q=313, _lambda=0.5):
+def calculate_weights_maps(z_true, prior_probs, input_shape,  len_q=313, _lambda=0.5):
     """
     Calculates the weight maps
     :param z_true: [batch, dim0, dim1, num_classes]
@@ -39,22 +39,19 @@ def calculate_weights_maps(z_true, len_q=313, _lambda=0.5):
     :param _lambda: 0.5
     :return: weights maps [batch, dim0, dim1]
     """
-    input_shape = z_true.shape
     batch_size = input_shape[0]
-    weights_maps = np.zeros(shape=[input_shape[0], input_shape[1], input_shape[2]])
 
-    p = np.load('/Users/clarabonnin/Documents/MET/DLAI/2018-dlai-team9/data/prior_probs.npy')
+    w = 1/((1 - _lambda) * prior_probs + _lambda / len_q)
+    q = tf.argmax(z_true, axis=3)  # [batch, dim0, dim1]
 
-    w = 1/((1 - _lambda) * p + _lambda / len_q)
-    q = np.argmax(z_true, axis=3)  # [batch, dim0, dim1]
-
+    weights_maps = np.zeros(shape = input_shape)
     for b in range(batch_size):
         weights_maps[b] = w[q[b]]
 
     return weights_maps
 
 
-def categorical_crossentropy_weighted(weights_maps):
+def categorical_crossentropy_weighted(prior_probs, input_shape):
     """
     Computes weighted categorical cross-entropy loss for a softmax distribution in a hot-encoded 2D array
     with shape (num_samples, num_classes, dim0, dim1)
@@ -73,14 +70,14 @@ def categorical_crossentropy_weighted(weights_maps):
         :return: scalar
              Categorical cross-entropy loss value
         """
-
+        weights_maps = calculate_weights_maps(z_true=y_true, prior_probs=prior_probs, input_shape = input_shape)
         weights_flatten = K.flatten(weights_maps)
         y_true_flatten = K.flatten(y_true)
         y_pred_flatten = K.flatten(y_predicted)
         y_pred_flatten_log = -K.log(y_pred_flatten + K.epsilon())
         cross_entropy = tf.multiply(y_true_flatten, y_pred_flatten_log)
-        cross_entropy = tf.reduce_sum(cross_entropy, axis=3)
-        multinomial_cross_entropy = tf.multiply(cross_entropy, weights_flatten)
+        weighted_cross_entropy = tf.multiply(cross_entropy, weights_flatten)
+        multinomial_cross_entropy = tf.reduce_sum(weighted_cross_entropy)
 
         return multinomial_cross_entropy
 
