@@ -3,7 +3,9 @@
 import argparse
 import sys
 
-import params.Imagenet as p
+import params as p
+import params.Imagenet as pd
+import numpy as np
 
 from model.cnn_net import get_model, compile
 from data.data_generator import Data
@@ -18,7 +20,7 @@ if __name__ == "__main__":
 
     print('Getting parameters to train the model...')
     params_string = arg.p
-    params = p.PARAMS_DICT[params_string].get_params()
+    params = pd.PARAMS_DICT[params_string].get_params()
     output_path = params[p.OUTPUT_PATH]
 
     print('PARAMETERS')
@@ -27,9 +29,12 @@ if __name__ == "__main__":
     """ ARCHITECTURE DEFINITION """
     print(" Defining architecture ... ")
     # get model
-    model = get_model(params[p.INPUT_SHAPE])
+    input_shape =[params[p.BATCH_SIZE],params[p.INPUT_SHAPE][0],params[p.INPUT_SHAPE][1]]
+    print('input shape', input_shape)
+    model = get_model(input_shape)
     # compile model
-    model = compile(model)
+    prior_probs = np.load('/imatge/pvidal/2018-dlai-team9/data/prior_probs.npy')
+    model = compile(model, prior_probs = prior_probs, input_shape = input_shape)
     model.summary()
 
     """ DATA LOADING """

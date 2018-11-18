@@ -115,7 +115,7 @@ def get_model(input_shape, **kwargs):
     return graph(input_shape)
 
 
-def compile(model, lr=0.005, optimizer_name='Adam', loss_name='cross_entropy_weighted', weights=None):
+def compile(model, lr=0.005, optimizer_name='Adam', loss_name='cross_entropy_weighted', prior_probs=None, input_shape= None):
     # Define Optimizer
     if optimizer_name == 'Adam':
         beta_1 = 0.9
@@ -131,7 +131,7 @@ def compile(model, lr=0.005, optimizer_name='Adam', loss_name='cross_entropy_wei
         loss = categorical_crossentropy
     elif loss_name == 'cross_entropy_weighted':
         print('Loss: Cross Entropy Weighted')
-        loss = categorical_crossentropy_weighted(weights)
+        loss = categorical_crossentropy_weighted(prior_probs, input_shape)
     else:
         raise ValueError('Please, specify a valid loss function')
 
