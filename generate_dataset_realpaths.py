@@ -7,5 +7,5 @@ def files_in_subdirs(dataset_path):
             print(os.path.join(folder, filename))
 
 if __name__ == '__main__':
-    files_in_subdirs('/projects/retrieval/imagenet/ILSVRC2015/Data/DET/train/')
+    files_in_subdirs('/projects/retrieval/imagenet/ILSVRC2015/Data/DET/val/')
 

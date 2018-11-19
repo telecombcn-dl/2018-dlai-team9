@@ -111,12 +111,12 @@ class Data2(object):
                 return_list = []
         yield np.array(return_list)
 
+
     def split_train_val(self, dataset_file, num_images_train, train_size):
         listdir = []
-        with open(dataset_file, 'r') as dataset:
-            for i, path in enumerate(dataset):
-                path = path.strip('\n')
-                listdir.append(path)
+        for i, path in enumerate(dataset_file):
+            path = path.strip('\n')
+            listdir.append(path)
         L = len(listdir)
 
         if num_images_train < L:
@@ -136,9 +136,11 @@ class Data2(object):
         return_list = []
         while True:
             for i, path in enumerate(listdir):
-                print(path)
-                return_list.append(self.load_image(h, w, path))
-                if not (i + 1) % batch:
+                try:
+                    return_list.append(self.load_image(h, w, path))
+                except:
+                    pass
+                if not (len(return_list) + 1) % batch:
                     inputs, labels = mapped_batch(return_list)
                     inputs = np.array(inputs)
                     labels = np.array(labels)
