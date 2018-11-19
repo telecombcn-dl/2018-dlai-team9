@@ -15,8 +15,14 @@ def mapped_batch(image_batch):
     :type image_batch: list
     :return: inputs, labels
     """
+    image_size = image_batch[0].shape
     inputs, labels = list(), list()
-    for image in image_batch:
-        inputs.append(np.expand_dims(image[:, :, 0],axis =2))
+    for i, image in enumerate(image_batch):
+        input = np.zeros((1, len(image_batch), image_size[0], image_size[0]))
+        input[0, i, :, :] = image[:, :, 0]
         labels.append(inverse_h(image[:, :, 1:]))
     return inputs, labels
+
+
+
+print('hi')
