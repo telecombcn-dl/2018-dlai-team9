@@ -10,8 +10,7 @@ from joblib import Parallel, delayed
 from data.preprocess_data import mapped_batch
 
 
-# There are 14197122 images in imagenet
-
+# When using not in UPC cluster
 class Data(object):
     def __init__(self, dataset_path):
         if not os.path.exists(dataset_path):
@@ -97,20 +96,104 @@ class Data(object):
             Image.fromarray(img_array).show()
 
 
+# When using in UPC cluster
+class Data2(object):
+    def __init__(self):
+        pass
+
+    def load_batch(self, dataset_file, h, w, batch=100):
+        return_list = []
+        for i, path in enumerate(dataset_file):
+            path = path.strip('\n')
+            return_list.append(self.load_image(h, w, path))
+            if not (i + 1) % batch:
+                yield np.array(return_list)
+                return_list = []
+        yield np.array(return_list)
+
+    def split_train_val(self, dataset_file, num_images_train, train_size):
+        listdir = []
+        with open(dataset_file, 'r') as dataset:
+            for i, path in enumerate(dataset):
+                path = path.strip('\n')
+                listdir.append(path)
+        L = len(listdir)
+
+        if num_images_train < L:
+            L_train = int(np.round(train_size * num_images_train))
+            L_val = num_images_train - L_train
+        else:
+            L_train = int(np.round(train_size * L))
+            L_val = L - L_train
+
+        np.random.seed(42)
+        np.random.shuffle(listdir)
+        return listdir[:L_train], listdir[L_train:L_train + L_val]
+
+    def data_generator(self, listdir, image_input_shape, batch=100):
+        w = image_input_shape[0]
+        h = image_input_shape[1]
+        return_list = []
+        while True:
+            for i, path in enumerate(listdir):
+                print(path)
+                return_list.append(self.load_image(h, w, path))
+                if not (i + 1) % batch:
+                    inputs, labels = mapped_batch(return_list)
+                    inputs = np.array(inputs)
+                    labels = np.array(labels)
+                    yield (inputs, labels)
+                    return_list = []
+
+            inputs, labels = mapped_batch(return_list)
+            inputs = np.array(inputs)
+            labels = np.array(labels)
+            yield (inputs, labels)
+
+    @staticmethod
+    def load_image(h, w, path):
+        img = Image.open(path)
+        img_array = np.array(img)
+        img_array_reshaped = resize(img_array, (h, w))
+        img_array_reshaped_lab = rgb2lab(img_array_reshaped)
+        return img_array_reshaped_lab
+
+    @staticmethod
+    def show_image(img_array, encoding='RGB_norm'):
+        if encoding == 'LAB':
+            Image.fromarray(np.uint8(lab2rgb(img_array) * 255)).show()
+        elif encoding == 'RGB_norm':
+            Image.fromarray(np.uint8(img_array * 255)).show()
+        elif encoding == 'RGB':
+            Image.fromarray(img_array).show()
+
+
 ### HOW TO USE DATA CLASS
 
-# CREATE DATASET
+# CREATE DATASET WITH DATA1
 def main1():
     dataset_path = './dataset'
     d = Data(dataset_path)
     d.generate_data_from_url_file(dataset_file_path='./dataset.txt', h=256, w=256)
 
 
-# LOAD AND VISUALIZE DATASET
+# LOAD AND VISUALIZE DATASET WITH DATA1
 def main2():
     dataset_path = './dataset'
     d = Data(dataset_path)
     for batch in d.load_batch(purpose='train', batch=20):
+        for img in batch:
+            d.show_image(img, 'LAB')
+
+
+# LOAD AND VISUALIZE DATASET WITH DATA2
+def main3():
+    d = Data2()
+    train_dataset_file = '../train.txt'  # change to the image paths file
+    h = 256
+    w = 256
+    batch = 100
+    for batch in d.load_batch(train_dataset_file, h, w, batch):
         for img in batch:
             d.show_image(img, 'LAB')
 
