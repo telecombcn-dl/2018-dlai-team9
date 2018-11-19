@@ -7,6 +7,7 @@ from skimage.transform import resize
 from skimage.color import rgb2lab, lab2rgb
 import os
 from joblib import Parallel, delayed
+from data.preprocess_data import mapped_batch
 
 
 # When using not in UPC cluster
@@ -52,6 +53,39 @@ class Data(object):
                 return_list = []
         yield np.array(return_list)
 
+    def split_train_val(self, num_images_train, train_size, purpose="train"):
+        purpose_path = self.dataset_path + '/' + purpose + '/'
+        listdir = os.listdir(purpose_path)
+        L = len(listdir)
+        if num_images_train < L:
+            L_train = int(np.round(train_size * num_images_train))
+            L_val = num_images_train - L_train
+        else:
+            L_train = int(np.round(train_size * L))
+            L_val = L - L_train
+
+        np.random.seed(42)
+        np.random.shuffle(listdir)
+        return listdir[:L_train], listdir[L_train:L_train + L_val]
+
+    def data_generator(self, listdir, purpose, batch):
+        purpose_path = self.dataset_path + '/' + purpose + '/'
+        while True:
+            for i, imdir in enumerate(listdir):
+                return_list.append(np.load(purpose_path + imdir))
+                if not (i + 1) % batch:
+                    inputs, labels = mapped_batch(return_list)
+                    inputs = np.array(inputs)
+                    labels = np.array(labels)
+                    yield (inputs, labels)
+                    return_list = []
+
+            inputs, labels = mapped_batch(return_list)
+            inputs = np.array(inputs)
+            labels = np.array(labels)
+            yield (inputs, labels)
+
+
     @staticmethod
     def show_image(img_array, encoding='RGB_norm'):
         if encoding == 'LAB':
@@ -77,6 +111,47 @@ class Data2(object):
                 return_list = []
         yield np.array(return_list)
 
+
+    def split_train_val(self, dataset_file, num_images_train, train_size):
+        listdir = []
+        for i, path in enumerate(dataset_file):
+            path = path.strip('\n')
+            listdir.append(path)
+        L = len(listdir)
+
+        if num_images_train < L:
+            L_train = int(np.round(train_size * num_images_train))
+            L_val = num_images_train - L_train
+        else:
+            L_train = int(np.round(train_size * L))
+            L_val = L - L_train
+
+        np.random.seed(42)
+        np.random.shuffle(listdir)
+        return listdir[:L_train], listdir[L_train:L_train + L_val]
+
+    def data_generator(self, listdir, image_input_shape, batch=100):
+        w = image_input_shape[0]
+        h = image_input_shape[1]
+        return_list = []
+        while True:
+            for i, path in enumerate(listdir):
+                try:
+                    return_list.append(self.load_image(h, w, path))
+                except:
+                    pass
+                if not (len(return_list) + 1) % batch:
+                    inputs, labels = mapped_batch(return_list)
+                    inputs = np.array(inputs)
+                    labels = np.array(labels)
+                    yield (inputs, labels)
+                    return_list = []
+
+            inputs, labels = mapped_batch(return_list)
+            inputs = np.array(inputs)
+            labels = np.array(labels)
+            yield (inputs, labels)
+
     @staticmethod
     def load_image(h, w, path):
         img = Image.open(path)
@@ -97,14 +172,14 @@ class Data2(object):
 
 ### HOW TO USE DATA CLASS
 
-# CREATE DATASET WITH DATA1
+# CREATE DATASET
 def main1():
     dataset_path = './dataset'
     d = Data(dataset_path)
     d.generate_data_from_url_file(dataset_file_path='./dataset.txt', h=256, w=256)
 
 
-# LOAD AND VISUALIZE DATASET WITH DATA1
+# LOAD AND VISUALIZE DATASET
 def main2():
     dataset_path = './dataset'
     d = Data(dataset_path)
