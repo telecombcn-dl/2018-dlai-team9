@@ -41,12 +41,13 @@ def calculate_weights_maps(z_true, prior_probs, input_shape,  len_q=313, _lambda
     """
     batch_size = input_shape[0]
 
-    w = 1/((1 - _lambda) * prior_probs + _lambda / len_q)
+    weights = 1/((1 - _lambda) * prior_probs + _lambda / len_q)
     q = tf.argmax(z_true, axis=3)  # [batch, dim0, dim1]
+    q  = K.flatten(q)
 
-    weights_maps = np.zeros(shape = input_shape)
-    for b in range(batch_size):
-        weights_maps[b] = w[q[b]]
+    weights_maps = tf.gather(weights,q)
+    
+    weights_maps = tf.reshape(weights_maps, input_shape)
 
     return weights_maps
 
@@ -76,7 +77,7 @@ def categorical_crossentropy_weighted(prior_probs, input_shape):
         y_pred_flatten = K.flatten(y_predicted)
         y_pred_flatten_log = -K.log(y_pred_flatten + K.epsilon())
         cross_entropy = tf.multiply(y_true_flatten, y_pred_flatten_log)
-        weighted_cross_entropy = tf.multiply(cross_entropy, weights_flatten)
+        weighted_cross_entropy = tf.multiply(cross_entropy,tf.cast(weights_flatten, tf.float32))
         multinomial_cross_entropy = tf.reduce_sum(weighted_cross_entropy)
 
         return multinomial_cross_entropy

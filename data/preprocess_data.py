@@ -2,6 +2,7 @@
 # and also the calculation of the aforementioned prior probabilities.
 import os
 import sys
+import numpy as np
 sys.path.append(os.path.join(os.path.dirname(__file__), *[os.path.pardir]))
 from utils.mappings import inverse_h
 
@@ -16,6 +17,6 @@ def mapped_batch(image_batch):
     """
     inputs, labels = list(), list()
     for image in image_batch:
-        inputs.append(image[:, :, 0])
+        inputs.append(np.expand_dims(image[:, :, 0],axis =2))
         labels.append(inverse_h(image[:, :, 1:]))
     return inputs, labels

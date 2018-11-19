@@ -8,7 +8,7 @@ import params.Imagenet as pd
 import numpy as np
 
 from model.cnn_net import get_model, compile
-from data.data_generator import Data
+from data.data_generator import Data2
 from data.preprocess_data import mapped_batch
 
 if __name__ == "__main__":
@@ -39,13 +39,13 @@ if __name__ == "__main__":
 
     """ DATA LOADING """
     print("Loading data ...")
-    dataset_path = './data/dataset'
-    d = Data(dataset_path)
-    d.generate_data_from_url_file(dataset_file_path='./data/dataset.txt', h=256, w=256)
-
-    listdir_train, listdir_val = d.split_train_val(num_images_train= params[p.N_IMAGES_TRAIN_VAL],train_size= params[p.TRAIN_SIZE])
-    generator_train = d.data_generator(listdir=listdir_train,purpose='train', batch=params[p.BATCH_SIZE])
-    generator_val = d.data_generator(listdir=listdir_val,purpose='val', batch=10)
+    dataset_file = './images_realpaths.txt'
+    d = Data2()
+ 
+    print('Creating generators ...')
+    listdir_train, listdir_val = d.split_train_val(dataset_file, num_images_train= params[p.N_IMAGES_TRAIN_VAL],train_size= params[p.TRAIN_SIZE])
+    generator_train = d.data_generator(listdir=listdir_train, image_input_shape = params[p.INPUT_SHAPE], batch=params[p.BATCH_SIZE])
+    generator_val = d.data_generator(listdir=listdir_val, image_input_shape = params[p.INPUT_SHAPE], batch=params[p.BATCH_SIZE])
 
     steps_per_epoch = len(listdir_train)
     steps_per_val = len(listdir_val)
@@ -54,6 +54,7 @@ if __name__ == "__main__":
     # Define callbacks
 
     """ MODEL TRAINING """
+    print('Start training ...')
     model.fit_generator(generator=generator_train,
                         steps_per_epoch=steps_per_epoch,
                         epochs=params[p.N_EPOCHS],
