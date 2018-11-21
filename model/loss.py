@@ -48,7 +48,7 @@ def calculate_weights_maps(z_true, prior_probs, input_shape,  len_q=313, _lambda
     weights_maps = tf.gather(weights,q)
     
     weights_maps = tf.reshape(weights_maps, input_shape)
-
+    print("WEIGHT MAPS", weights_maps)
     return weights_maps
 
 
