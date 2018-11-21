@@ -29,7 +29,7 @@ if __name__ == "__main__":
     """ ARCHITECTURE DEFINITION """
     print(" Defining architecture ... ")
     # get model
-    input_shape =[params[p.BATCH_SIZE],params[p.INPUT_SHAPE][0],params[p.INPUT_SHAPE][1]]
+    input_shape =[params[p.INPUT_SHAPE][0],params[p.INPUT_SHAPE][1],params[p.INPUT_SHAPE][2]]
     print('input shape', input_shape)
     model = get_model(input_shape)
     # compile model
