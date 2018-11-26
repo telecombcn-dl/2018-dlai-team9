@@ -2,6 +2,7 @@
 
 import argparse
 import sys
+import time
 
 import params as p
 import params.Imagenet as pd
@@ -10,6 +11,7 @@ import numpy as np
 from model.cnn_net import get_model, compile
 from data.data_generator import Data2
 from data.preprocess_data import mapped_batch
+from keras.callbacks import TensorBoard
 
 if __name__ == "__main__":
 
@@ -54,10 +56,18 @@ if __name__ == "__main__":
     # Define callbacks
 
     """ MODEL TRAINING """
+
+    tensorboard = TensorBoard(log_dir="logs/{}".format(time.time()))
+
     print('Start training ...')
-    model.fit_generator(generator=generator_train,
+    history = model.fit_generator(generator=generator_train,
                         steps_per_epoch=steps_per_epoch,
                         epochs=params[p.N_EPOCHS],
                         validation_data=generator_val,
-                        validation_steps=steps_per_val)
+                        validation_steps=steps_per_val,
+                        callbacks = [tensorboard])
+
+    model.save('cats_and_dogs_small_3_class.h5')
+    np.save('history_cats_and_dogs_small_3_class', history.history)
+
     print("Training finished")
