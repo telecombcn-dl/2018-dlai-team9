@@ -2,9 +2,11 @@
 
 Project goal: **Image colorization**
 
+## Abstract
+
 The project will consist in implementing from scratch with Keras and
 Tensorflow the pipeline described in the 
-[Colorful Image Colorization peper](https://arxiv.org/pdf/1603.08511.pdf)
+[Colorful Image Colorization paper](https://arxiv.org/pdf/1603.08511.pdf) which consists in generating realistic colorizations, given a grayscale photograph as input.
 
 Team members:
 * [Clara Bonnin](https://github.com/clarabonnin)
@@ -13,7 +15,7 @@ Team members:
 * [Joan Marco](https://github.com/JMarcoRimmek)
 
 
-## Python
+## Programming language
 We will be using Python 3.6 for this project. A virtual environment can 
 easily be created by running:
 ```bash
@@ -24,3 +26,9 @@ pip install -r requirements.txt
 
 In `requirements.txt` you will find any python dependency needed
  to run the code.
+
+## Dataset generation
+
+...
+
+## Architecture
