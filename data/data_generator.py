@@ -6,7 +6,7 @@ import numpy as np
 from skimage.transform import resize
 from skimage.color import rgb2lab, lab2rgb
 import os
-from joblib import Parallel, delayed
+# from joblib import Parallel, delayed
 from data.preprocess_data import mapped_batch
 
 
@@ -39,8 +39,9 @@ class Data(object):
     def generate_data_from_url_file(self, dataset_file_path, h, w, test_prop=0.1):
         # To generate a rondom sub set on size N from fall11_urls.txt execute on command line:
         # shuf -n N fall11_urls.txt > sub_dataset.txt
-        with open(dataset_file_path) as f:
-            Parallel(n_jobs=8)(delayed(self.job)(i, line, h, w, test_prop) for i, line in enumerate(f))
+        # with open(dataset_file_path) as f:
+            # Parallel(n_jobs=8)(delayed(self.job)(i, line, h, w, test_prop) for i, line in enumerate(f))
+        pass
 
     def load_batch(self, purpose='train', batch=100):
         purpose_path = self.dataset_path + '/' + purpose + '/'
@@ -103,20 +104,23 @@ class Data2(object):
 
     def load_batch(self, dataset_file, h, w, batch=100):
         return_list = []
-        for i, path in enumerate(dataset_file):
-            path = path.strip('\n')
-            return_list.append(self.load_image(h, w, path))
-            if not (i + 1) % batch:
-                yield np.array(return_list)
-                return_list = []
-        yield np.array(return_list)
+        with open(dataset_file) as f:
+            for i, path in enumerate(f):
+                path = path.strip('\n')
+                print(path)
+                return_list.append(self.load_image(h, w, path))
+                if not (i + 1) % batch:
+                    yield np.array(return_list)
+                    return_list = []
+            yield np.array(return_list)
 
 
     def split_train_val(self, dataset_file, num_images_train, train_size):
         listdir = []
-        for i, path in enumerate(dataset_file):
-            path = path.strip('\n')
-            listdir.append(path)
+        with open(dataset_file, 'r') as f:
+            for i, path in enumerate(f):
+                path = path.strip('\n')
+                listdir.append(path)
         L = len(listdir)
 
         if num_images_train < L:
@@ -201,4 +205,4 @@ def main3():
 
 
 if __name__ == "__main__":
-    main2()
+    print('pause')
