@@ -114,23 +114,25 @@ class Data2(object):
 
     def split_train_val(self, dataset_file, num_images_train, train_size):
         listdir = []
-        for i, path in enumerate(dataset_file):
-            path = path.strip('\n')
-            listdir.append(path)
-        L = len(listdir)
+        with open(dataset_file, 'r') as f:
+            for i, path in enumerate(f):
+                path = path.strip('\n')
+                listdir.append(path)
+            L = len(listdir)
 
-        if num_images_train < L:
-            L_train = int(np.round(train_size * num_images_train))
-            L_val = num_images_train - L_train
-        else:
-            L_train = int(np.round(train_size * L))
-            L_val = L - L_train
+            if num_images_train < L:
+                L_train = int(np.round(train_size * num_images_train))
+                L_val = num_images_train - L_train
+            else:
+                L_train = int(np.round(train_size * L))
+                L_val = L - L_train
 
-        np.random.seed(42)
-        np.random.shuffle(listdir)
-        return listdir[:L_train], listdir[L_train:L_train + L_val]
+            np.random.seed(42)
+            np.random.shuffle(listdir)
 
-    def data_generator(self, listdir, image_input_shape, batch=100):
+            return listdir[:L_train], listdir[L_train:L_train + L_val]
+
+    def data_generator(self, listdir, image_input_shape, batch=10):
         w = image_input_shape[0]
         h = image_input_shape[1]
         return_list = []
@@ -144,7 +146,7 @@ class Data2(object):
                     inputs, labels = mapped_batch(return_list)
                     inputs = np.array(inputs)
                     labels = np.array(labels)
-                    yield (inputs, labels)
+                    yield inputs, labels
                     return_list = []
 
             inputs, labels = mapped_batch(return_list)
