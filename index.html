@@ -1,0 +1,201 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Colorization</title>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<meta name="description" content="" />
+		<meta name="keywords" content="" />
+		<!--[if lte IE 8]><script src="js/html5shiv.js"></script><![endif]-->
+		<script src="js/jquery.min.js"></script>
+		<script src="js/skel.min.js"></script>
+		<script src="js/skel-layers.min.js"></script>
+		<script src="js/init.js"></script>
+		<noscript>
+			<link rel="stylesheet" href="css/skel.css" />
+			<link rel="stylesheet" href="css/style.css" />
+			<link rel="stylesheet" href="css/style-xlarge.css" />
+		</noscript>
+	</head>
+	<body id="top">
+
+		<!-- Header -->
+		<header id="header" class="skel-layers-fixed">
+			<h1><a href="#">TEAM 9</a></h1>
+			<nav id="nav">
+				<ul>
+					<li><a href="http://35.205.152.112:9090/notebooks/A2F.ipynb">JNotebook</a></li>
+					<li><a href="#authors">Authors</a></li>
+					<li><a href="#introduction">Introduction</a></li>
+ 					<li><a href="#dataset">Dataset generation</a></li>
+					<li><a href="#architecture">Architecture</a></li>
+					<li><a href="#problems_solutions">Problems and Solutions</a></li>
+					<li><a href="#Final approach: Colorization">Colorization</a></li>
+					<li><a href="#future_work">Future Work</a></li>
+					
+				</ul>
+			</nav>
+		</header>
+
+		<!-- Banner -->
+		<section id="banner">
+			<div class="inner">
+				<h2></h2>
+			</div>
+		</section>
+
+		<!-- One -->
+		<section id="authors" class="wrapper style1">
+			<header class="major">
+					<h2>Authors</h2>
+			</header>
+
+			<div class="container">
+				<div class="row">
+					<div class="3u">
+						<section class="special box">
+							<a href="https://www.linkedin.com/in/adribarja/" class="image fit"><img src="images/adria.jpg" alt="" /></a>
+							<p>Adrià Barja</p>
+						</section>
+					</div>
+					<div class="3u">
+						<section class="special box">
+							<a href="https://www.linkedin.com/in/clara-bonn%C3%ADn-rossell%C3%B3-18634b10b/" class="image fit"><img src="images/clara.jpeg" alt="" /></a>
+							<p>Clara Bonnín</p>
+						</section>
+					</div>
+					<div class="3u">
+						<section class="special box">
+							<a href="https://www.linkedin.com/in/jmarcorimmek/" class="image fit"><img src="images/joan.jpg" alt="" /></a>
+							<p>Joan Marco Rimmek</p>
+						</section>
+					</div>
+					<div class="3u">
+						<section class="special box">
+							<a href="https://www.linkedin.com/in/mariona-c-a7bb91105/" class="image fit"><img src="images/mariona.png" alt="" /></a>
+							<p>Mariona Carós</p>
+						</section>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- Three -->
+		<section id="introduction" class="wrapper style1">
+			<header class="major">
+				<h2>Introduction</h2>
+			</header>
+			<div class="container">
+				<div class="row">
+					<div class="6u">
+						<section>
+							<h2>Abstract</h2>
+							<a class="image fit"><img src="images/2.png" alt="" /></a>
+							<p> The aim of this project is to generate colorized images from the source luminance using a Convolutional Neural Network (CNN) following the ideas proposed in Colorful Image Colorization by Richard Zhang, Phillip Isola and Alexei A. Efros (https://arxiv.org/pdf/1603.08511.pdf).</p>
+						</section>
+					</div>
+					<div class="6u">
+						<section>
+							<h3>Dataset</h3>
+							<a class="image fit"><img src="images/3.png" alt="" /></a>
+							<p> The ImageNet dataset has been used to train the network.  </p>
+						</section>
+					</div>
+				</div>
+			</div>
+		</section>			
+
+		<section id="dataset" class="wrapper style1">
+			<header class="major">
+				<h2>Dataset generation</h2>
+			</header>
+			<div class="container">
+				<div class="row">
+					<div class="7u">
+						<section>
+							<h2>CIE Lab Color space</h2>
+							<a class="image fit"><img src="images/cielab.jpg" alt="" /></a>
+							<p> We work on the CIE Lab Color space. It expresses color as three numerical values, L* for the lightness and a* and b* for the green–red and blue–yellow color components. CIELAB was designed to be perceptually uniform with respect to human color vision, meaning that the same amount of numerical change in these values corresponds to about the same amount of visually perceived change.</p>
+						</section>
+					</div>
+					<div class="5u">
+						<section>
+							<h2>Class rebalancing</h2>
+							<a class="image fit"><img src="images/12.jpeg" alt="" /></a>
+							<p> Explain class rebalancing and class Probabilities to Point estimates</p>
+						</section>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<section id="architecture" class="wrapper style1">
+			<header class="major">
+				<h2>Architecture</h2>
+			</header>
+			<div class="container">
+				<div class="row">
+					<div class="6u">
+						<section>
+							<h2>First approach: BEGAN Architecture</h2>
+							<a class="image fit"><img src="images/architecture.png" alt="" /></a>
+							<p> The architecture proposed in the [Colorful Image Colorization paper](https://arxiv.org/pdf/1603.08511.pdf) consists in a VGG-styled network with added depth and dilated convolutions
+
+							</p>
+						</section>
+					</div>
+					<div class="6u">
+						<section>
+							<h2>Loss Function</h2>
+							<a class="image fit"><img src="images/loss_function.png" alt="" /></a>
+							<p> Given an input lightness channel, our objective is to learn a mapping Y = F(X) to the two associated color cchannels Y 2 RHW2, where H,W are image dimensions.</p>
+						</section>
+					</div>
+				</div>
+
+			</div>
+		</section>
+
+		<section id="problems_solutions" class="wrapper style1">
+			<header class="major">
+				<h2>Problems and solutions</h2>
+			</header>
+			
+		</section>
+		
+		<section id="Final approach" class="wrapper style1">
+			<header class="major">
+				<h2>Final approach</h2>
+			</header>
+			<div class="container">
+				
+			</div>
+		</section>
+		
+		<section id="future_work" class="wrapper style1">
+			<div class="container">
+				<div class="row">
+					<div class="6u">
+						<section>
+							<h2>Future work</h2>
+							<p>....</p>
+						</section>
+					</div>
+
+				</div>
+			</div>
+		</section>
+		
+		<section id="references" class="wrapper style2">
+			<div class="container">
+				<div class="row">
+					<div class="6u">
+						<section>
+							
+						</section>
+					</div>
+				</div>
+			</div>
+		</section>
+
+	</body>
+</html>
