@@ -145,9 +145,11 @@
 					</div>
 					<div class="6u">
 						<section>
-							<h2>Loss Function</h2>
+							<h2>Loss Function: Weighted cross-entropy</h2>
 							<a class="image fit"><img src="images/loss_function.png" alt="" /></a>
-							<p> Given an input lightness channel, our objective is to learn a mapping Y = F(X) to the two associated color cchannels Y 2 RHW2, where H,W are image dimensions.</p>
+							<p>The problem is treated as a multinomial classification. The ab output is quantified in Q=313 values. For a given input X of dims HxWx1, our architecture learns a mapping Zpred = G(X) to a probability distribution of the Q possible colors values. Therefore, Zpred has dimensions HxWxQ. <br>
+							In order to compare Z predicted against the ground truth values of the image Y, we define a soft-encoding Z = inverse(H)(Y) that transforms the ground truth color to a 1-hot vector Z with the nearest 5 quantized bins ab using a gaussian kernel.<br>
+							To account for the imbalance problem, a reweighting of the loss function based in the pixel's rarity is defined. Each pixels is weighted by a factor w of dims Qx1 based on its closest ab bin. The following formula shows how the reweighting matrix is obtained. </p>
 						</section>
 					</div>
 				</div>
