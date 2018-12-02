@@ -13,11 +13,11 @@ def mapped_batch(image_batch):
     """
     Given a batch of images, it returns two lists: one containing the lightness and another one containing the
     color in the Q mapping.
-    :param image_batch: Batch of images
+    :param image_batch: Batch of images and labels
     :type image_batch: list
     :return: inputs, labels
     """
-    # image_size = image_batch[0].shape
+    image_size = image_batch[0].shape
     inputs, labels = list(), list()
     for i, image in enumerate(image_batch):
         inputs.append(np.expand_dims(image[:, :, 0], axis=2))
