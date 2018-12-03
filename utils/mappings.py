@@ -32,7 +32,7 @@ def inverse_h(y, neighbors=10, sigma=5.0):
     return q
 
 
-def h(q, temp=None):
+def h(q, temp=1.0):
     """
     Returns the H mapping. That is, from Q to Y.
     :param q: Array of H*W*Q dimensions
@@ -40,8 +40,6 @@ def h(q, temp=None):
     :type temp: float
     :return: Array of H*W*2 dimensions
     """
-    if temp is not None:
-        # TODO: temperature scaling
-        pass
+    q = np.power(q, 1.0/temp) / np.sum(np.power(q, 1.0/temp), axis=2)[:, :, None]
     y = np.tensordot(q, pts_in_hull, axes=(2, 0))
     return y
