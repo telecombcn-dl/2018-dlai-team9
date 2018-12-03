@@ -30,7 +30,7 @@ def categorical_crossentropy(z_true, z_predicted):
     return mean_cross_entropy
 
 
-def calculate_weights_maps(z_true, prior_probs, input_shape,  len_q=313, _lambda=0.5):
+def calculate_weights_maps(z_true, prior_probs, input_shape, len_q=313, _lambda=0.5):
     """
     Calculates the weight maps
     :param z_true: [batch, dim0, dim1, num_classes]
@@ -41,12 +41,12 @@ def calculate_weights_maps(z_true, prior_probs, input_shape,  len_q=313, _lambda
     """
     batch_size = input_shape[0]
 
-    weights = 1/((1 - _lambda) * prior_probs + _lambda / len_q)
+    weights = 1 / ((1 - _lambda) * prior_probs + _lambda / len_q)
     q = tf.argmax(z_true, axis=3)  # [batch, dim0, dim1]
     # q = K.flatten(q)
 
     weights_maps = tf.gather(weights, q)  # [batch, dim0, dim1]
-    
+
     # weights_maps = tf.reshape(weights_maps, input_shape)
 
     return weights_maps
@@ -71,7 +71,7 @@ def categorical_crossentropy_weighted(prior_probs, input_shape):
         :return: scalar
              Categorical cross-entropy loss value
         """
-        original_input_shape = [None, 64,64,313]
+        original_input_shape = [None, 64, 64, 313]
         weights_maps = calculate_weights_maps(z_true=y_true, prior_probs=prior_probs, input_shape=input_shape)
         weights_flatten = K.flatten(weights_maps)
         y_true_flatten = K.flatten(y_true)
