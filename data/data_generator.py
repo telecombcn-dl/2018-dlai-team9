@@ -39,8 +39,9 @@ class Data(object):
     def generate_data_from_url_file(self, dataset_file_path, h, w, test_prop=0.1):
         # To generate a rondom sub set on size N from fall11_urls.txt execute on command line:
         # shuf -n N fall11_urls.txt > sub_dataset.txt
-        with open(dataset_file_path) as f:
-            Parallel(n_jobs=8)(delayed(self.job)(i, line, h, w, test_prop) for i, line in enumerate(f))
+        # with open(dataset_file_path) as f:
+            # Parallel(n_jobs=8)(delayed(self.job)(i, line, h, w, test_prop) for i, line in enumerate(f))
+        pass
 
     def load_batch(self, purpose='train', batch=100):
         purpose_path = self.dataset_path + '/' + purpose + '/'
@@ -103,13 +104,15 @@ class Data2(object):
 
     def load_batch(self, dataset_file, h, w, batch=100):
         return_list = []
-        for i, path in enumerate(dataset_file):
-            path = path.strip('\n')
-            return_list.append(self.load_image(h, w, path))
-            if not (i + 1) % batch:
-                yield np.array(return_list)
-                return_list = []
-        yield np.array(return_list)
+        with open(dataset_file) as f:
+            for i, path in enumerate(f):
+                path = path.strip('\n')
+                print(path)
+                return_list.append(self.load_image(h, w, path))
+                if not (i + 1) % batch:
+                    yield np.array(return_list)
+                    return_list = []
+            yield np.array(return_list)
 
 
     def split_train_val(self, dataset_file, num_images_train, train_size):
@@ -118,41 +121,56 @@ class Data2(object):
             for i, path in enumerate(f):
                 path = path.strip('\n')
                 listdir.append(path)
-            L = len(listdir)
+        L = len(listdir)
 
-            if num_images_train < L:
-                L_train = int(np.round(train_size * num_images_train))
-                L_val = num_images_train - L_train
-            else:
-                L_train = int(np.round(train_size * L))
-                L_val = L - L_train
+        if num_images_train < L:
+            L_train = int(np.round(train_size * num_images_train))
+            L_val = num_images_train - L_train
+        else:
+            L_train = int(np.round(train_size * L))
+            L_val = L - L_train
 
-            np.random.seed(42)
-            np.random.shuffle(listdir)
-
-            return listdir[:L_train], listdir[L_train:L_train + L_val]
+        np.random.seed(42)
+        np.random.shuffle(listdir)
+        return listdir[:L_train], listdir[L_train:L_train + L_val]
 
     def data_generator(self, listdir, image_input_shape, batch=10):
         w = image_input_shape[0]
         h = image_input_shape[1]
         return_list = []
+
+        print('Dataset size = {0}'.format(len(listdir)))
         while True:
+            valid_samples = 0
+            invalid_samples1 = 0
+            invalid_samples2 = 0
             for i, path in enumerate(listdir):
                 try:
-                    return_list.append(self.load_image(h, w, path))
+                    image = self.load_image(h, w, path)
+                    if image.shape == (h,w,3):
+                        return_list.append(image)
+                        valid_samples += 1
+                    else:
+                        invalid_samples1 += 1
+                        continue
                 except:
+                    invalid_samples2 +=1
                     pass
-                if not (len(return_list) + 1) % batch:
+                if not (len(return_list) + 1) % (batch+1):
                     inputs, labels = mapped_batch(return_list)
                     inputs = np.array(inputs)
                     labels = np.array(labels)
-                    yield inputs, labels
+                    if inputs.shape == (batch, 256, 256, 1) and labels.shape == (batch, 64, 64, 313):
+                        yield (inputs, labels)
                     return_list = []
-
+            print('Valid samples: {}'.format(valid_samples))
+            print('Invalid shape samples: {}'.format(invalid_samples1))
+            print('Invalid format samples: {}'.format(invalid_samples2))
             inputs, labels = mapped_batch(return_list)
             inputs = np.array(inputs)
             labels = np.array(labels)
-            yield (inputs, labels)
+            if inputs.shape == (batch, 256, 256, 1) and labels.shape == (batch, 64, 64, 313):
+                yield (inputs, labels)
 
     @staticmethod
     def load_image(h, w, path):
