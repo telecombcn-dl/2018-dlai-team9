@@ -8,7 +8,7 @@ def get_params():
         p.BATCH_SIZE: 10,
         p.LR: 0.0005,  # Learning rate
 
-        p.N_IMAGES_TRAIN_VAL: 1000,
+        p.N_IMAGES_TRAIN_VAL: 456567,
         p.TRAIN_SIZE: 0.6,
 
         p.LOSS: 'cross_entropy_weighted',
