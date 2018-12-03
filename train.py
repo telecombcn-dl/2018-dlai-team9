@@ -15,6 +15,7 @@ from keras.callbacks import TensorBoard
 
 if __name__ == "__main__":
 
+
     """ PARAMETERS"""
     parser = argparse.ArgumentParser()
     parser.add_argument("-p", help="Params", default=None, type=str)

@@ -138,7 +138,7 @@ def compile(model, lr=0.005, optimizer_name='Adam', loss_name='cross_entropy_wei
     # TODO: Define Metrics
     # metrics = [raw_accuracy]
 
-    model.compile(optimizer=optimizer, loss='mean_squared_error')
+    model.compile(optimizer=optimizer, loss=loss)
 
     return model
 

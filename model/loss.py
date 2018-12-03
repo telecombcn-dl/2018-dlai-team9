@@ -71,7 +71,7 @@ def categorical_crossentropy_weighted(prior_probs, input_shape):
         :return: scalar
              Categorical cross-entropy loss value
         """
-        original_input_shape = [input_shape[0], input_shape[1], input_shape[2], 313]
+        original_input_shape = [None, 64,64,313]
         weights_maps = calculate_weights_maps(z_true=y_true, prior_probs=prior_probs, input_shape=input_shape)
         weights_flatten = K.flatten(weights_maps)
         y_true_flatten = K.flatten(y_true)
