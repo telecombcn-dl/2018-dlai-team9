@@ -36,7 +36,7 @@ class Evaluation(object):
             self.load_model()
             predicted_chromaticity = self.predict_chromaticity(luminance)
         else:
-            predicted_chromaticity = mappings.h(mappings.inverse_h(chromaticity), self.temperature)
+            predicted_chromaticity = mappings.h(mappings.inverse_h(chromaticity), temp=self.temperature)
 
         pred_image = self.merge_and_resize_image(luminance, predicted_chromaticity)
         self.show_image(pred_image, encoding='LAB')
@@ -59,8 +59,8 @@ class Evaluation(object):
         self.model = load_model(self.model_path)
 
     def predict_chromaticity(self, luminance):
-        q_chroma = self.model.predict(np.array([luminance]), batch_size=1, verbose=1)
-        chromaticity = mappings.h(q_chroma, t=self.temperature)
+        q_chroma = self.model.predict(np.array([luminance]), batch_size=1, verbose=1)[0]
+        chromaticity = mappings.h(q_chroma, temp=self.temperature)
         return chromaticity
 
     def merge_and_resize_image(self, luminance, chromaticity):
