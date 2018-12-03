@@ -6,7 +6,7 @@ import numpy as np
 from skimage.transform import resize
 from skimage.color import rgb2lab, lab2rgb
 import os
-# from joblib import Parallel, delayed
+from joblib import Parallel, delayed
 from data.preprocess_data import mapped_batch
 
 
@@ -134,7 +134,7 @@ class Data2(object):
         np.random.shuffle(listdir)
         return listdir[:L_train], listdir[L_train:L_train + L_val]
 
-    def data_generator(self, listdir, image_input_shape, batch=100):
+    def data_generator(self, listdir, image_input_shape, batch=10):
         w = image_input_shape[0]
         h = image_input_shape[1]
         return_list = []
@@ -221,4 +221,4 @@ def main3():
 
 
 if __name__ == "__main__":
-    print('pause')
+    main2()
