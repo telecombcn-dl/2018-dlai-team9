@@ -1,4 +1,6 @@
 # This file evaluates the model.
+import os
+import png
 import argparse
 import numpy as np
 from PIL import Image
@@ -18,6 +20,10 @@ class Evaluation(object):
         self.input_image_path = args.input_image
         self.model_path = args.model_path
         self.model = None
+        self.output_path = 'outputs/'
+        if not os.path.exists(self.output_path):
+            os.mkdir(self.output_path)
+
 
     @staticmethod
     def parse_arguments():
@@ -39,8 +45,10 @@ class Evaluation(object):
             predicted_chromaticity = mappings.h(mappings.inverse_h(chromaticity), temp=self.temperature)
 
         pred_image = self.merge_and_resize_image(luminance, predicted_chromaticity)
-        self.show_image(pred_image, encoding='LAB')
-        self.show_image(self.ori_image, encoding='RGB')
+        self.show_image(pred_image, title='Predicted image', encoding='LAB')
+        self.show_image(self.ori_image, title='Original image', encoding='RGB')
+        self.save_image(pred_image, name='predicted_image')
+        self.save_image(self.ori_image, name='original_image', encoding='RGB')
 
     def load_image(self):
         img = Image.open(self.input_image_path)
@@ -70,13 +78,22 @@ class Evaluation(object):
         return resize(image, (h, w), mode='constant', anti_aliasing=True)
 
     @staticmethod
-    def show_image(img_array, encoding='RGB_norm'):
+    def show_image(img_array, title=None, encoding='RGB_norm'):
         if encoding == 'LAB':
-            Image.fromarray(np.uint8(lab2rgb(img_array) * 255)).show()
+            Image.fromarray(np.uint8(lab2rgb(img_array) * 255)).show(title=title)
         elif encoding == 'RGB_norm':
-            Image.fromarray(np.uint8(img_array * 255)).show()
+            Image.fromarray(np.uint8(img_array * 255)).show(title=title)
         elif encoding == 'RGB':
-            Image.fromarray(img_array).show()
+            Image.fromarray(img_array).show(title=title)
+
+    def save_image(self, image, name, encoding='LAB'):
+        if encoding == 'LAB':
+            png.from_array(np.uint8(lab2rgb(image) * 255), 'RGB')\
+                .save(os.path.join(self.output_path, '{}.png'.format(name)))
+        elif encoding == 'RGB_norm':
+            png.from_array(np.uint8(image * 255), 'RGB').save(os.path.join(self.output_path, '{}.png'.format(name)))
+        elif encoding == 'RGB':
+            png.from_array(image, 'RGB').save(os.path.join(self.output_path, '{}.png'.format(name)))
 
 
 if __name__ == '__main__':
