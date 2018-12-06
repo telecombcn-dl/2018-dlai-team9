@@ -11,9 +11,9 @@ def get_params():
         p.N_IMAGES_TRAIN_VAL: 456567,
         p.TRAIN_SIZE: 0.6,
 
-        p.LOSS: 'cross_entropy_weighted',
+        p.LOSS: 'mse',
 
-        p.OUTPUT_PATH: '/work/pvidal/',
+        p.OUTPUT_PATH: '/imatge/pvidal/work/dlai/mini_batch_test',
 
         p.MODEL_NAME: 'cnn'
 

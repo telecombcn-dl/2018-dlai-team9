@@ -45,8 +45,8 @@ class Evaluation(object):
             predicted_chromaticity = mappings.h(mappings.inverse_h(chromaticity), temp=self.temperature)
 
         pred_image = self.merge_and_resize_image(luminance, predicted_chromaticity)
-        self.show_image(pred_image, title='Predicted image', encoding='LAB')
-        self.show_image(self.ori_image, title='Original image', encoding='RGB')
+        # self.show_image(pred_image, title='Predicted image', encoding='LAB')
+        # self.show_image(self.ori_image, title='Original image', encoding='RGB')
         self.save_image(pred_image, name='predicted_image')
         self.save_image(self.ori_image, name='original_image', encoding='RGB')
 

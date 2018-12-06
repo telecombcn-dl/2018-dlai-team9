@@ -3,14 +3,14 @@
 import argparse
 import sys
 import time
-
+from os.path import join
 import params as p
 import params.Imagenet as pd
 import numpy as np
 
 from model.cnn_net import get_model, compile
 from data.data_generator import Data2
-from keras.callbacks import TensorBoard
+from keras.callbacks import TensorBoard, ModelCheckpoint, EarlyStopping
 
 if __name__ == "__main__":
 
@@ -35,12 +35,12 @@ if __name__ == "__main__":
     model = get_model(input_shape)
     # compile model
     prior_probs = np.load('/imatge/pvidal/2018-dlai-team9/data/prior_probs.npy')
-    model = compile(model, prior_probs=prior_probs, input_shape=input_shape)
+    model = compile(model, prior_probs=prior_probs, input_shape=input_shape, loss_name= params[p.LOSS])
     model.summary()
 
     """ DATA LOADING """
     print("Loading data ...")
-    dataset_file = './images_realpaths.txt'
+    dataset_file = './images_realpaths_10'
     d = Data2()
 
     print('Creating generators ...')
@@ -54,12 +54,20 @@ if __name__ == "__main__":
     steps_per_epoch = len(listdir_train) / params[p.BATCH_SIZE]
     steps_per_val = len(listdir_val) / params[p.BATCH_SIZE]
 
+    steps_per_epoch = 10
+    steps_per_val = 10
+
     """ TENSORBOARD """
     # Define callbacks
 
-    """ MODEL TRAINING """
-
     tensorboard = TensorBoard(log_dir="logs/{}".format(time.time()), update_freq='batch')
+
+    output_path = params[p.OUTPUT_PATH]
+    #checkpoint = ModelCheckpoint(join(output_path,'checkpoints') , monitor='val_loss', verbose=0, save_best_only=False, save_weights_only=False, mode='auto', period=1)
+
+    earlystopping = EarlyStopping(monitor='val_loss', patience=5, verbose=1, restore_best_weights=True)
+
+    """ MODEL TRAINING """
 
     print('Start training...')
     try:
@@ -69,7 +77,8 @@ if __name__ == "__main__":
                                       epochs=params[p.N_EPOCHS],
                                       validation_data=generator_val,
                                       validation_steps=steps_per_val,
-                                      callbacks=[tensorboard])
+                                      verbose=1,
+                                      callbacks=[tensorboard, earlystopping])
 
         model.save('model.h5')
         np.save('history', history.history)

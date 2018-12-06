@@ -162,14 +162,15 @@ class Data2(object):
                     if inputs.shape == (batch, 256, 256, 1) and labels.shape == (batch, 64, 64, 313):
                         yield (inputs, labels)
                     return_list = []
-            print('Valid samples: {}'.format(valid_samples))
-            print('Invalid shape samples: {}'.format(invalid_samples1))
-            print('Invalid format samples: {}'.format(invalid_samples2))
+            # print('Valid samples: {}'.format(valid_samples))
+            # print('Invalid shape samples: {}'.format(invalid_samples1))
+            # print('Invalid format samples: {}'.format(invalid_samples2))
             inputs, labels = mapped_batch(return_list)
             inputs = np.array(inputs)
             labels = np.array(labels)
             if inputs.shape == (batch, 256, 256, 1) and labels.shape == (batch, 64, 64, 313):
                 yield (inputs, labels)
+
 
     @staticmethod
     def load_image(h, w, path):

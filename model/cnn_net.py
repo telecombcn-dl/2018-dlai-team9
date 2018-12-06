@@ -1,10 +1,13 @@
 # This file contains the CNN definition
 from keras.optimizers import Adam
 from model.loss import categorical_crossentropy, categorical_crossentropy_weighted
+from keras.losses import mean_squared_error
 from keras.layers import Input, Activation, ZeroPadding2D, BatchNormalization, Conv2D, Deconv2D, MaxPooling2D, Dropout,\
     Concatenate, Lambda, Add, UpSampling2D
 from keras.regularizers import l1_l2
 from keras.activations import softmax
+from keras.metrics import categorical_accuracy
+
 
 from keras.models import Model
 
@@ -353,13 +356,15 @@ def compile(model, lr=0.005, optimizer_name='Adam', loss_name='cross_entropy_wei
     elif loss_name == 'cross_entropy_weighted':
         print('Loss: Cross Entropy Weighted')
         loss = categorical_crossentropy_weighted(prior_probs, input_shape)
+    elif loss_name == 'mse':
+        loss = mean_squared_error
     else:
-        raise ValueError('Please, specify a valid loss function')
+        raise ValueError('Please, specify a valid loss function!')
 
     # TODO: Define Metrics
-    # metrics = [raw_accuracy]
+    metrics = [categorical_accuracy]
 
-    model.compile(optimizer=optimizer, loss=loss)
+    model.compile(optimizer=optimizer, loss=loss, metrics=metrics)
 
     return model
 

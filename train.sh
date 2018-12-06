@@ -15,6 +15,6 @@ done
 
 if [ "${PARAMS}" = "params_train"  ]
     then
-    srun  --gres=gpu:1,gmem:11GB --pty  --mem=20G  python train.py -p"${PARAMS}"
+    srun  --gres=gpu:1,gmem:11GB --pty  --mem=20G  python -W ignore train.py -p"${PARAMS}"
 
 fi
