@@ -220,5 +220,26 @@ def main3():
             d.show_image(img, 'LAB')
 
 
+def main4():
+    dataset_file = './images_realpaths.txt'
+    d = Data2()
+    listdir_train, listdir_val = d.split_train_val(dataset_file, num_images_train=456567,
+                                                   train_size=0.6)
+    generator_train = d.data_generator(listdir=listdir_train, image_input_shape=[256, 256, 1],
+                                       batch=10)
+
+    for i in range(10):
+        print('*****************')
+        inputs, labels = next(generator_train)
+        mean = np.mean(inputs, axis=3)
+        print('Mean ', mean)
+        print('mean mean', np.mean(mean))
+        print('labels', np.unique(labels))
+        reduced_labels = np.sum(labels, axis=3)
+        print('reduces labels unique', np.unique(reduced_labels))
+
+
+        print('*****************')
+
 if __name__ == "__main__":
-    main2()
+    main4()

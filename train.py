@@ -33,6 +33,7 @@ if __name__ == "__main__":
     input_shape = [params[p.INPUT_SHAPE][0], params[p.INPUT_SHAPE][1], params[p.INPUT_SHAPE][2]]
     print('input shape', input_shape)
     model = get_model(input_shape)
+    print('compile model')
     # compile model
     prior_probs = np.load('/imatge/pvidal/2018-dlai-team9/data/prior_probs.npy')
     model = compile(model, prior_probs=prior_probs, input_shape=input_shape, loss_name= params[p.LOSS])
@@ -40,7 +41,7 @@ if __name__ == "__main__":
 
     """ DATA LOADING """
     print("Loading data ...")
-    dataset_file = './images_realpaths_10'
+    dataset_file = './images_realpaths.txt'
     d = Data2()
 
     print('Creating generators ...')
@@ -54,13 +55,11 @@ if __name__ == "__main__":
     steps_per_epoch = len(listdir_train) / params[p.BATCH_SIZE]
     steps_per_val = len(listdir_val) / params[p.BATCH_SIZE]
 
-    steps_per_epoch = 10
-    steps_per_val = 10
 
     """ TENSORBOARD """
     # Define callbacks
 
-    tensorboard = TensorBoard(log_dir="logs/{}".format(time.time()), update_freq='batch')
+    tensorboard = TensorBoard(log_dir="/imatge/mcaros/dlai/clara/logs/{}".format(time.time()), update_freq='batch')
 
     output_path = params[p.OUTPUT_PATH]
     #checkpoint = ModelCheckpoint(join(output_path,'checkpoints') , monitor='val_loss', verbose=0, save_best_only=False, save_weights_only=False, mode='auto', period=1)
@@ -80,10 +79,10 @@ if __name__ == "__main__":
                                       verbose=1,
                                       callbacks=[tensorboard, earlystopping])
 
-        model.save('model.h5')
+        model.save('/imatge/mcaros/dlai/clara/model.h5')
         np.save('history', history.history)
 
     except KeyboardInterrupt:
-        model.save('model.h5')
+        model.save('/imatge/mcaros/dlai/clara/model.h5')
 
     print("Training finished")

@@ -16,5 +16,8 @@ done
 if [ "${PARAMS}" = "params_train"  ]
     then
     srun  --gres=gpu:1,gmem:11GB --pty  --mem=20G  python -W ignore train.py -p"${PARAMS}"
+elif [ "${PARAMS}" = "params_train_unet"  ]
+    then
+    srun  --gres=gpu:1,gmem:11GB --pty  --mem=20G  python -W ignore train_unet.py -p"${PARAMS}"
 
 fi

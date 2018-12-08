@@ -118,11 +118,134 @@ def graph(input_shape):
     return model
 
 
+def graph_BN(input_shape):
+    """
+    This function defines the graph
+    :param input_shape: shape of the input
+    :return: a model instance in Keras
+    """
+
+    # Define the input placeholder as a tensor with shape input_shape.
+    X_input = Input(input_shape)
+
+    # ***** conv1 *****
+    X = ZeroPadding2D((1, 1))(X_input)
+    X = BatchNormalization(axis=3, name='batch_norm_1.1')(X)
+    X = Conv2D(64, (3, 3), strides=(1, 1), name='bw_conv1_1')(X)
+    X = Activation('relu')(X)  # relu1_1
+    X = ZeroPadding2D((1, 1))(X)
+    X = BatchNormalization(axis=3, name='batch_norm_1.2')(X)
+    X = Conv2D(64, (3, 3), strides=(2, 2), name='conv1_2')(X)
+    X = Activation('relu')(X)  # relu1_2
+    X = BatchNormalization(axis=3, name='conv1_2norm')(X)  # axis=3??
+
+    # ***** conv2 *****
+    X = ZeroPadding2D((1, 1))(X)
+    X = BatchNormalization(axis=3, name='batch_norm_2_1')(X)
+    X = Conv2D(128, (3, 3), strides=(1, 1), name='conv2_1')(X)
+    X = Activation('relu')(X)
+    X = ZeroPadding2D((1, 1))(X)
+    X = BatchNormalization(axis=3, name='batch_norm_2.2')(X)
+    X = Conv2D(128, (3, 3), strides=(2, 2), name='conv2_2')(X)
+    X = Activation('relu')(X)
+
+    # ***** conv3 *****
+    X = ZeroPadding2D((1, 1))(X)
+    X = BatchNormalization(axis=3, name='batch_norm_3.1')(X)
+    X = Conv2D(256, (3, 3), strides=(1, 1), name='conv3_1')(X)
+    X = Activation('relu')(X)
+
+    X = ZeroPadding2D((1, 1))(X)
+    X = BatchNormalization(axis=3, name='batch_norm_3.2')(X)
+    X = Conv2D(256, (3, 3), strides=(1, 1), name='conv3_2')(X)
+    X = Activation('relu')(X)
+    X = ZeroPadding2D((1, 1))(X)
+
+    X = BatchNormalization(axis=3, name='batch_norm_3.3')(X)
+    X = Conv2D(256, (3, 3), strides=(2, 2), name='conv3_3')(X)
+    X = Activation('relu')(X)
+
+    # ***** conv4 *****
+    X = ZeroPadding2D((1, 1))(X)
+    X = BatchNormalization(axis=3, name='batch_norm_4.1')(X)
+    X = Conv2D(512, (3, 3), strides=(1, 1), dilation_rate=(1, 1), name='conv4_1')(X)
+    X = Activation('relu')(X)
+    X = ZeroPadding2D((1, 1))(X)
+    X = BatchNormalization(axis=3, name='batch_norm_4.2')(X)
+    X = Conv2D(512, (3, 3), strides=(1, 1), dilation_rate=(1, 1), name='conv4_2')(X)
+    X = Activation('relu')(X)
+    X = ZeroPadding2D((1, 1))(X)
+    X = BatchNormalization(axis=3, name='batch_norm_4.3')(X)
+    X = Conv2D(512, (3, 3), strides=(1, 1), dilation_rate=(1, 1), name='conv4_3')(X)
+    X = Activation('relu')(X)
+
+    # ***** conv5 *****
+    X = ZeroPadding2D((2, 2))(X)
+    X = BatchNormalization(axis=3, name='batch_norm_5.1')(X)
+    X = Conv2D(512, (3, 3), strides=(1, 1), dilation_rate=(2, 2), name='conv5_1')(X)
+    X = Activation('relu')(X)
+    X = ZeroPadding2D((2, 2))(X)
+    X = BatchNormalization(axis=3, name='batch_norm_5.2')(X)
+    X = Conv2D(512, (3, 3), strides=(1, 1), dilation_rate=(2, 2), name='conv5_2')(X)
+    X = Activation('relu')(X)
+    X = ZeroPadding2D((2, 2))(X)
+    X = BatchNormalization(axis=3, name='batch_norm_5.3')(X)
+    X = Conv2D(512, (3, 3), strides=(1, 1), dilation_rate=(2, 2), name='conv5_3')(X)
+    X = Activation('relu')(X)
+
+    # ***** conv6 *****
+    X = ZeroPadding2D((2, 2))(X)
+    X = BatchNormalization(axis=3, name='batch_norm_6.1')(X)
+    X = Conv2D(512, (3, 3), strides=(1, 1), dilation_rate=(2, 2), name='conv6_1')(X)
+    X = Activation('relu')(X)
+    X = ZeroPadding2D((2, 2))(X)
+    X = BatchNormalization(axis=3, name='batch_norm_6.2')(X)
+    X = Conv2D(512, (3, 3), strides=(1, 1), dilation_rate=(2, 2), name='conv6_2')(X)
+    X = Activation('relu')(X)
+    X = ZeroPadding2D((2, 2))(X)
+    X = BatchNormalization(axis=3, name='batch_norm_6.3')(X)
+    X = Conv2D(512, (3, 3), strides=(1, 1), dilation_rate=(2, 2), name='conv6_3')(X)
+    X = Activation('relu')(X)
+
+    # ***** conv7 *****
+    X = ZeroPadding2D((1, 1))(X)
+    X = BatchNormalization(axis=3, name='batch_norm_7.1')(X)
+    X = Conv2D(512, (3, 3), strides=(1, 1), dilation_rate=(1, 1), name='conv7_1')(X)
+    X = Activation('relu')(X)
+    X = ZeroPadding2D((1, 1))(X)
+    X = BatchNormalization(axis=3, name='batch_norm_7.2')(X)
+    X = Conv2D(512, (3, 3), strides=(1, 1), dilation_rate=(1, 1), name='conv7_2')(X)
+    X = Activation('relu')(X)
+    X = ZeroPadding2D((1, 1))(X)
+    X = BatchNormalization(axis=3, name='batch_norm_7.3')(X)
+    X = Conv2D(512, (3, 3), strides=(1, 1), dilation_rate=(1, 1), name='conv7_3')(X)
+    X = Activation('relu')(X)
+    X = BatchNormalization(axis=3, name='conv7_3norm')(X)  # axis=3??
+
+    # ***** conv8 *****
+    X = Deconv2D(256, (4, 4), strides=(2, 2), dilation_rate=(1, 1), name='conv8_1', padding='same')(X)
+    X = Activation('relu')(X)
+    X = ZeroPadding2D((1, 1))(X)
+    X = Conv2D(256, (3, 3), strides=(1, 1), dilation_rate=(1, 1), name='conv8_2')(X)
+    X = Activation('relu')(X)
+    X = ZeroPadding2D((1, 1))(X)
+    X = Conv2D(256, (3, 3), strides=(1, 1), dilation_rate=(1, 1), name='conv8_3')(X)
+    X = Activation('relu')(X)
+
+    # ***** Unary prediction *****
+    X = Conv2D(313, (1, 1), name='conv8_313')(X)
+    X = Activation('softmax')(X)
+
+    model = Model(inputs=X_input, outputs=X, name='graph')
+
+    return model
+
+
 def get_model(input_shape, **kwargs):
     return graph(input_shape)
 
 
-def unet(input_shape=(256, 256, 1),l1=0.00001, l2=0.005):
+def unet(input_shape=(256, 256, 1), l1=0.00001, l2=0.005):
     # Hyperaparametre values
     initializer = 'he_normal'
     pool_size = (2, 2)
@@ -337,7 +460,8 @@ def unet(input_shape=(256, 256, 1),l1=0.00001, l2=0.005):
     return model
 
 
-
+def get_unet(input_shape, **kwargs):
+    return unet(input_shape)
 
 def compile(model, lr=0.005, optimizer_name='Adam', loss_name='cross_entropy_weighted', prior_probs=None, input_shape= None):
     # Define Optimizer
@@ -345,7 +469,7 @@ def compile(model, lr=0.005, optimizer_name='Adam', loss_name='cross_entropy_wei
         beta_1 = 0.9
         beta_2 = 0.999
         epsilon = 10 ** (-8)
-        optimizer = Adam(lr=lr, beta_1=beta_1, beta_2=beta_2, epsilon=epsilon, clipnorm=1.)
+        optimizer = Adam(lr=lr, beta_1=beta_1, beta_2=beta_2, decay=1e-3, epsilon=epsilon, clipnorm=1.)
     else:
         raise ValueError('Please, specify a valid optimizer')
 
