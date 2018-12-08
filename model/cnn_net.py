@@ -112,6 +112,7 @@ def graph(input_shape):
 
     # ***** Unary prediction *****
     X = Conv2D(313, (1, 1), name='conv8_313')(X)
+    X = Activation('softmax')(X)
 
     model = Model(inputs=X_input, outputs=X, name='graph')
 
@@ -338,7 +339,7 @@ def unet(input_shape=(256, 256, 1), l1=0.00001, l2=0.005):
     tmp = Activation('relu')(tmp)
     tmp = Conv2D(128, (2, 2), strides=(2, 2), kernel_initializer=initializer, kernel_regularizer=regularizer,
                  name='downpool_4', padding='same')(tmp)
-    tmp = BatchNormalization(axis=4, name='batch_norm_5.2')(tmp)
+    tmp = BatchNormalization(axis=3, name='batch_norm_5.2')(tmp)
     tmp = Activation('relu')(tmp)
     tmp = Conv2D(128, (3, 3), kernel_initializer=initializer, kernel_regularizer=regularizer, name='conv_5.1',
                  padding='same')(tmp)
@@ -450,11 +451,11 @@ def unet(input_shape=(256, 256, 1), l1=0.00001, l2=0.005):
 
     in_softmax = Activation('relu')(tmp)
 
-    classification = Conv2D(313, (1, 1, 1), kernel_initializer=initializer,
-                            name='final_convolution_1x1x1')(in_softmax)
+    classification = Conv2D(313, (1, 1), kernel_initializer=initializer,
+                            name='final_convolution_1x1')(in_softmax)
 
-    y = softmax(classification)
-
+    # y = softmax(classification)
+    y = Activation('softmax')(classification)
     model = Model(inputs=x, outputs=y)
 
     return model
