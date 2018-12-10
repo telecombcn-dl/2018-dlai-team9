@@ -40,7 +40,7 @@ class Data(object):
         # To generate a rondom sub set on size N from fall11_urls.txt execute on command line:
         # shuf -n N fall11_urls.txt > sub_dataset.txt
         # with open(dataset_file_path) as f:
-            # Parallel(n_jobs=8)(delayed(self.job)(i, line, h, w, test_prop) for i, line in enumerate(f))
+        # Parallel(n_jobs=8)(delayed(self.job)(i, line, h, w, test_prop) for i, line in enumerate(f))
         pass
 
     def load_batch(self, purpose='train', batch=100):
@@ -86,7 +86,6 @@ class Data(object):
             labels = np.array(labels)
             yield (inputs, labels)
 
-
     @staticmethod
     def show_image(img_array, encoding='RGB_norm'):
         if encoding == 'LAB':
@@ -113,7 +112,6 @@ class Data2(object):
                     yield np.array(return_list)
                     return_list = []
             yield np.array(return_list)
-
 
     def split_train_val(self, dataset_file, num_images_train, train_size):
         listdir = []
@@ -147,21 +145,23 @@ class Data2(object):
             for i, path in enumerate(listdir):
                 try:
                     image = self.load_image(h, w, path)
-                    if image.shape == (h,w,3):
+                    if image.shape == (h, w, 3):
                         return_list.append(image)
                         valid_samples += 1
+                        # print(path)
                     else:
                         invalid_samples1 += 1
                         continue
                 except:
-                    invalid_samples2 +=1
+                    invalid_samples2 += 1
                     pass
-                if not (len(return_list) + 1) % (batch+1):
+                if not (len(return_list) + 1) % (batch + 1):
                     inputs, labels = mapped_batch(return_list)
                     inputs = np.array(inputs)
                     labels = np.array(labels)
                     if inputs.shape == (batch, 256, 256, 1) and labels.shape == (batch, 64, 64, 313):
-                        yield (inputs, labels)
+                        while True:
+                            yield (inputs, labels)
                     return_list = []
             print('Valid samples: {}'.format(valid_samples))
             print('Invalid shape samples: {}'.format(invalid_samples1))

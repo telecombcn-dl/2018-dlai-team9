@@ -1,8 +1,14 @@
 # This file contains the CNN definition
 from keras.optimizers import Adam
-from model.loss import categorical_crossentropy, categorical_crossentropy_weighted
-from keras.layers import Input, Activation, ZeroPadding2D, BatchNormalization, Conv2D, Deconv2D
+from model.loss import categorical_crossentropy_weighted
+from keras.layers import Input, Activation, ZeroPadding2D, BatchNormalization, Conv2D, Deconv2D, Lambda
 from keras.models import Model
+from keras.losses import categorical_crossentropy
+import tensorflow as tf
+
+
+def softmax_per_pixel(X):
+    return tf.divide(tf.exp(X), tf.expand_dims(tf.reduce_sum(tf.exp(X), axis=3), 3))
 
 
 def graph(input_shape):
@@ -105,6 +111,7 @@ def graph(input_shape):
 
     # ***** Unary prediction *****
     X = Conv2D(313, (1, 1), name='conv8_313')(X)
+    X = Lambda(softmax_per_pixel)(X)
 
     model = Model(inputs=X_input, outputs=X, name='graph')
 
@@ -115,7 +122,8 @@ def get_model(input_shape, **kwargs):
     return graph(input_shape)
 
 
-def compile(model, lr=0.005, optimizer_name='Adam', loss_name='cross_entropy_weighted', prior_probs=None, input_shape= None):
+def compile(model, lr=0.005, optimizer_name='Adam', loss_name='cross_entropy_weighted', prior_probs=None,
+            input_shape=None):
     # Define Optimizer
     if optimizer_name == 'Adam':
         beta_1 = 0.9
@@ -138,8 +146,9 @@ def compile(model, lr=0.005, optimizer_name='Adam', loss_name='cross_entropy_wei
     # TODO: Define Metrics
     # metrics = [raw_accuracy]
 
+    print('using loss {}'.format(loss))
     model.compile(optimizer=optimizer, loss=loss)
-
+    print('model compiled')
     return model
 
 

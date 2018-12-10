@@ -17,7 +17,6 @@ def mapped_batch(image_batch):
     :type image_batch: list
     :return: inputs, labels
     """
-    image_size = image_batch[0].shape
     inputs, labels = list(), list()
     for i, image in enumerate(image_batch):
         inputs.append(np.expand_dims(image[:, :, 0], axis=2))

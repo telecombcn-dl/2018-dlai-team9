@@ -23,6 +23,7 @@ if __name__ == "__main__":
 
     print('Getting parameters to train the model...')
     params_string = arg.p
+    # params_string = 'params_train'
     params = pd.PARAMS_DICT[params_string].get_params()
     output_path = params[p.OUTPUT_PATH]
 
@@ -37,6 +38,7 @@ if __name__ == "__main__":
     model = get_model(input_shape)
     # compile model
     prior_probs = np.load('/imatge/pvidal/2018-dlai-team9/data/prior_probs.npy')
+    # prior_probs = np.load('/home/adribarja/Documents/COLE/Q1/DLAI/2018-dlai-team9/data/prior_probs.npy')
     model = compile(model, prior_probs = prior_probs, input_shape = input_shape)
     model.summary()
 
@@ -70,11 +72,11 @@ if __name__ == "__main__":
                             validation_steps=steps_per_val,
                             callbacks = [tensorboard])
 
-        model.save('cats_and_dogs_small_3_class.h5')
-        np.save('history_cats_and_dogs_small_3_class', history.history)
+        model.save('olakase.h5')
+        np.save('olakase', history.history)
 
     except KeyboardInterrupt:
-        model.save('cats_and_dogs_small_3_class_interrupted.h5')
-        np.save('history_cats_and_dogs_small_3_class_interrupted', history.history)
+        model.save('olakase.h5')
+        np.save('olakase', history.history)
 
     print("Training finished")
