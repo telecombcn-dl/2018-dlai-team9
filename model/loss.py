@@ -235,18 +235,13 @@ def categorical_crossentropy_weighted(prior_probs, input_shape):
         :return: scalar
              Categorical cross-entropy loss value
         """
-        y_pred = tf.Print(y_pred, [tf.reduce_min(y_pred)], 'y_pred min: ')
-        y_pred = tf.Print(y_pred, [tf.reduce_max(y_pred)], 'y_pred max: ')
-        y_true = tf.Print(y_true, [tf.reduce_min(y_true)], 'y_trues min: ')
-        y_true = tf.Print(y_true, [tf.reduce_max(y_true)], 'y_trues max: ')
         weights_maps = calculate_weights_maps(z_true=y_true, prior_probs=prior_probs)
         y_pred_log = -K.log(y_pred + K.epsilon())
         cross_entropy = tf.multiply(y_true, y_pred_log)
         cross_entropy = tf.reduce_sum(cross_entropy, axis=3)
         weighted_cross_entropy = tf.multiply(cross_entropy, tf.cast(weights_maps, tf.float32))
         weighted_cross_entropy = tf.reduce_sum(weighted_cross_entropy)
-        weighted_cross_entropy = tf.Print(weighted_cross_entropy, [weighted_cross_entropy], 'weighted cross_entropy: ')
-        return weighted_cross_entropy/tf.reduce_sum(y_true + K.epsilon())
+        return weighted_cross_entropy
 
     return categorical_crossentropy
 

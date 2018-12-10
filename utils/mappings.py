@@ -3,10 +3,10 @@ import utils.helpers as helpers
 from sklearn.neighbors import NearestNeighbors
 
 # On import run:
-prior_probs = np.load('/imatge/pvidal/2018-dlai-team9/data/prior_probs.npy')
-# prior_probs = np.load('/home/adribarja/Documents/COLE/Q1/DLAI/2018-dlai-team9/data/prior_probs.npy')
-pts_in_hull = np.load('/imatge/pvidal/2018-dlai-team9/data/pts_in_hull.npy')
-# pts_in_hull = np.load('/home/adribarja/Documents/COLE/Q1/DLAI/2018-dlai-team9/data/pts_in_hull.npy')
+# prior_probs = np.load('/imatge/pvidal/2018-dlai-team9/data/prior_probs.npy')
+prior_probs = np.load('/home/adribarja/Documents/COLE/Q1/DLAI/2018-dlai-team9/data/prior_probs.npy')
+# pts_in_hull = np.load('/imatge/pvidal/2018-dlai-team9/data/pts_in_hull.npy')
+pts_in_hull = np.load('/home/adribarja/Documents/COLE/Q1/DLAI/2018-dlai-team9/data/pts_in_hull.npy')
 
 len_Q = pts_in_hull.shape[0]
 nn = NearestNeighbors(algorithm='ball_tree').fit(pts_in_hull)
