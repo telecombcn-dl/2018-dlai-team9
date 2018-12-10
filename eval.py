@@ -68,7 +68,7 @@ class Evaluation(object):
 
     def predict_chromaticity(self, luminance):
         luminance_expanded = np.expand_dims(luminance, axis=0)
-        q_chroma = self.model.predict(np.array(luminance_expanded), batch_size=1, verbose=1)[0]
+        q_chroma = self.model.predict(luminance_expanded, batch_size=1, verbose=1)[0]
         chromaticity = mappings.h(q_chroma, temp=self.temperature)
         return chromaticity
 
@@ -98,5 +98,5 @@ class Evaluation(object):
 
 
 if __name__ == '__main__':
-    evaluation_class = Evaluation(autotest=True)
+    evaluation_class = Evaluation(autotest=False)
     evaluation_class.eval()
