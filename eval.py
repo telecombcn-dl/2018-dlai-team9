@@ -16,6 +16,7 @@ class Evaluation(object):
         self.edge_size = 256
         self.autotest = autotest
         self.ori_image = None
+        self.ori_luminance = None
         args = self.parse_arguments()
         self.input_image_path = args.input_image
         self.model_path = args.model_path
@@ -23,7 +24,6 @@ class Evaluation(object):
         self.output_path = 'outputs/'
         if not os.path.exists(self.output_path):
             os.mkdir(self.output_path)
-
 
     @staticmethod
     def parse_arguments():
@@ -44,7 +44,7 @@ class Evaluation(object):
         else:
             predicted_chromaticity = mappings.h(mappings.inverse_h(chromaticity), temp=self.temperature)
 
-        pred_image = self.merge_and_resize_image(luminance, predicted_chromaticity)
+        pred_image = self.merge_and_resize_image(predicted_chromaticity)
         self.show_image(pred_image, title='Predicted image', encoding='LAB')
         self.show_image(self.ori_image, title='Original image', encoding='RGB')
         self.save_image(pred_image, name='predicted_image')
@@ -53,6 +53,7 @@ class Evaluation(object):
     def load_image(self):
         img = Image.open(self.input_image_path)
         self.ori_image = np.array(img)
+        self.ori_luminance = np.expand_dims(rgb2lab(self.ori_image)[:, :, 0], axis=2)
         img_array_reshaped = resize(self.ori_image, (self.edge_size, self.edge_size),
                                     mode='constant', anti_aliasing=True)
         return rgb2lab(img_array_reshaped)
@@ -68,15 +69,15 @@ class Evaluation(object):
 
     def predict_chromaticity(self, luminance):
         luminance_expanded = np.expand_dims(luminance, axis=0)
-        q_chroma = self.model.predict(luminance_expanded, batch_size=1, verbose=1)[0]
+        q_chroma = self.model.predict(luminance_expanded, batch_size=1)[0]
         chromaticity = mappings.h(q_chroma, temp=self.temperature)
         return chromaticity
 
-    def merge_and_resize_image(self, luminance, chromaticity):
-        upsampled_chroma = resize(chromaticity, (self.edge_size, self.edge_size), mode='constant', anti_aliasing=True)
-        image = np.concatenate((luminance, upsampled_chroma), axis=2)
+    def merge_and_resize_image(self, chromaticity):
         h, w, _ = self.ori_image.shape
-        return resize(image, (h, w), mode='constant', anti_aliasing=True)
+        upsampled_chroma = resize(chromaticity, (h, w), mode='constant', anti_aliasing=True)
+        image = np.concatenate((self.ori_luminance, upsampled_chroma), axis=2)
+        return image
 
     @staticmethod
     def show_image(img_array, title=None, encoding='RGB_norm'):
