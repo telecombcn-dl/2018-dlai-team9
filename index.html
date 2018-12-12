@@ -29,7 +29,7 @@
 					<li><a href="#architecture">Architecture</a></li>
 					<li><a href="#experiments">Experiments</a></li>
 					<li><a href="#problems_solutions">Problems and Solutions</a></li>
-					<li><a href="#Final approach: Colorization">Colorization</a></li>
+					<li><a href="#Final approach: Colorization">Final approach</a></li>
 					<li><a href="#future_work">Future Work</a></li>
 					
 				</ul>
@@ -89,18 +89,23 @@
 					<div class="6u">
 						<section>
 							<h2>Abstract</h2>
-							<a class="image fit"><img src="images/approach.png" alt="" /></a>
-							<p> The aim of this project is to generate realistic colorized images given a grayscale photograph as input, following and reproducing the ideas proposed in <a href="https://arxiv.org/pdf/1603.08511.pdf"> Colorful Image Colorization by Richard Zhang, Phillip Isola and Alexei A. Efros </a> <br><br>
+							<a class="image fit"><img src="images/colors.jpeg" alt="" /></a>
+							<p> The aim of this project is to generate realistic colorized images given a grayscale photograph as input, following and reproducing the ideas proposed in <a href="https://arxiv.org/pdf/1603.08511.pdf"> Colorful Image Colorization by Richard Zhang, Phillip Isola and Alexei A. Efros </a> that was implemented in Caffe.<br><br>
 
 							The model consists in a Convolutional Neural Network (CNN) implemented from scratch with Keras and Tensorflow. Given the source luminance, it predicts the corresponding a and b color channels of the image in the CIE Lab colorspace.
 							</p>
+							<a class="image fit"><img src="images/approach.png" alt="" /></a>
 						</section>
 					</div>
 					<div class="6u">
 						<section>
+							<h3>State of the art</h3>
+							<p> </p>
+						</section>	
+						<section>
 							<h3>Dataset</h3>
-							<a class="image fit"><img src="images/colors.jpeg" alt="" /></a>
-							<p> We used ImageNet database to train our model. Predicting color has the nice property that training data is practically free. There is no need for humans to label data because any color photo can be used as a training example, simply by taking the image's L channel as input and its ab channels as the supervisory signal. Therefore, our algorithm uses a self-supervised approach to train by previously converting the source images to grayscale.</p>
+							<a class="image fit"><img src="BW_bird.png" alt="" /></a>
+							<p> We used 2 datasets to train our model; ImageNet (ref) and a Flowers Image Dataset (ref). Predicting color has the nice property that training data is practically free. There is no need for humans to label data because any color photo can be used as a training example, simply by taking the image's L channel (luminance) as input and its ab channels (color) as the supervisory signal. Therefore, our algorithm uses a self-supervised approach to train by previously converting the source images to grayscale.</p>
 						</section>
 					</div>
 				</div>
@@ -136,7 +141,7 @@
 			</header>
 			<div class="container">
 				<div class="row">
-					<div class="6u">
+					<div class="7u">
 						<section>
 							<h2>First approach: BEGAN Architecture</h2>
 							<a class="image fit"><img src="images/architecture.png" alt="" /></a>
@@ -162,7 +167,7 @@
 							</p>
 						</section>
 					</div>
-					<div class="6u">
+					<div class="5u">
 						<section>
 							<h2>Loss Function: Weighted cross-entropy</h2>
 							<a class="image fit"><img src="images/loss_function.png" alt="" /></a>
@@ -176,18 +181,61 @@
 			</div>
 		</section>
 
-		<section id="experimenrs" class="wrapper style1">
+		<section id="experiments" class="wrapper style1">
 			<header class="major">
 				<h2>Experiments</h2>
 			</header>
-			
+			<div class="container">
+				<div class="row">
+					<div class="6u">
+						<section>
+							<h2>Overfitting a mini-batch</h2>
+							<a class="image fit"><img src="images/mini_batch_overfitted.png" alt=""/></a>
+							<p> Explain</p>
+						</section>
+					</div>
+					<div class="6u">
+						<section>
+							<h2>Trainig with different loss functions</h2>
+							
+							<img src="images/mse_mini_batch.png" alt="" style="width:512px;"> 
+							<img src="images/categorical_cross_entropy_minibatch.png" alt="" style="width:512px;">
+							
+							<p> Explain </p>
+						</section>
+					</div>
+				</div>	
+			</div>					
 		</section>
 
 		<section id="problems_solutions" class="wrapper style1">
 			<header class="major">
 				<h2>Problems and solutions</h2>
 			</header>
-			
+			<div class="container">
+				<div class="row">
+					<div class="4u">
+						<section>
+							<h2>Loss turns into 'nan'</h2>
+							<p> Explain</p>
+						</section>
+					</div>
+					<div class="4u">
+						<section>
+							<h2>The model only produces red images</h2>
+							<a class="image fit"><img src="images/problem_red_outputs.png" alt="" /></a>
+							<p> Explain </p>
+						</section>
+					</div>
+					<div class="4u">
+						<section>
+							<h2>First results</h2>
+							<a class="image fit"><img src="images/first_results.png" alt="" /></a>
+							<p> Explain </p>
+						</section>
+					</div>
+				</div>	
+			</div>
 		</section>
 		
 		<section id="Final approach" class="wrapper style1">
