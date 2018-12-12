@@ -104,7 +104,7 @@
 						</section>	
 						<section>
 							<h3>Dataset</h3>
-							<a class="image fit"><img src="BW_bird.png" alt="" /></a>
+							<a class="image fit"><img src="images/BW_bird.png" alt="" /></a>
 							<p> We used 2 datasets to train our model; ImageNet (ref) and a Flowers Image Dataset (ref). Predicting color has the nice property that training data is practically free. There is no need for humans to label data because any color photo can be used as a training example, simply by taking the image's L channel (luminance) as input and its ab channels (color) as the supervisory signal. Therefore, our algorithm uses a self-supervised approach to train by previously converting the source images to grayscale.</p>
 						</section>
 					</div>
@@ -191,17 +191,16 @@
 						<section>
 							<h2>Overfitting a mini-batch</h2>
 							<a class="image fit"><img src="images/mini_batch_overfitted.png" alt=""/></a>
-							<p> Explain</p>
+							<p> We decided to overfit the model by using a mini-batch of 25 images to ensure that the model was working properly. It's a quick sanity test beause if the model can't overfit a small amount of data, thre is a simple bug somewhere. Once we achieved to overfit the model, we trained the model with more inputs.</p>
 						</section>
 					</div>
 					<div class="6u">
 						<section>
 							<h2>Trainig with different loss functions</h2>
-							
+							<p> We decided to train and test our model with different loss functions to compare the results and to prove that the weighted crossentropy is the loss that provides the more realistic results. </p>
 							<img src="images/mse_mini_batch.png" alt="" style="width:512px;"> 
-							<img src="images/categorical_cross_entropy_minibatch.png" alt="" style="width:512px;">
 							
-							<p> Explain </p>
+							
 						</section>
 					</div>
 				</div>	
