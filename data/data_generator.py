@@ -113,8 +113,7 @@ class Data2(object):
                     return_list = []
             yield np.array(return_list)
 
-    @staticmethod
-    def split_train_val(dataset_file, num_images_train, train_size):
+    def split_train_val(self, dataset_file, num_images_train, train_size):
         listdir = []
         with open(dataset_file, 'r') as f:
             for i, path in enumerate(f):
@@ -133,7 +132,7 @@ class Data2(object):
         np.random.shuffle(listdir)
         return listdir[:L_train], listdir[L_train:L_train + L_val]
 
-    def data_generator(self, listdir, image_input_shape, batch=10):
+    def data_generator(self, listdir, image_input_shape, batch=100):
         w = image_input_shape[0]
         h = image_input_shape[1]
         return_list = []
@@ -149,6 +148,7 @@ class Data2(object):
                     if image.shape == (h, w, 3):
                         return_list.append(image)
                         valid_samples += 1
+                        # print(path)
                     else:
                         invalid_samples1 += 1
                         continue
@@ -160,6 +160,7 @@ class Data2(object):
                     inputs = np.array(inputs)
                     labels = np.array(labels)
                     if inputs.shape == (batch, 256, 256, 1) and labels.shape == (batch, 64, 64, 313):
+                        # while True:
                         yield (inputs, labels)
                     return_list = []
             print('Valid samples: {}'.format(valid_samples))
@@ -220,4 +221,4 @@ def main3():
 
 
 if __name__ == "__main__":
-    main2()
+    print('pause')
