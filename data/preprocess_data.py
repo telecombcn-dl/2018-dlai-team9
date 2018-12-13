@@ -1,6 +1,7 @@
 import os
 import sys
 import numpy as np
+
 sys.path.append(os.path.join(os.path.dirname(__file__), *[os.path.pardir]))
 from utils.mappings import inverse_h
 from skimage.transform import resize
@@ -15,7 +16,7 @@ def mapped_batch(image_batch):
     :return: inputs, labels
     """
     inputs, labels = list(), list()
-    for i, image in enumerate(image_batch):
+    for image in image_batch:
         inputs.append(np.expand_dims(image[:, :, 0], axis=2))
-        labels.append(resize(inverse_h(image[:, :, 1:]), (64, 64)))
+        labels.append(inverse_h(resize(image[:, :, 1:], (64, 64))))
     return np.array(inputs), np.array(labels)

@@ -90,7 +90,7 @@ class Evaluation(object):
 
     def save_image(self, image, name, encoding='LAB'):
         if encoding == 'LAB':
-            png.from_array(np.uint8(lab2rgb(image) * 255), 'RGB')\
+            png.from_array(np.uint8(lab2rgb(image) * 255), 'RGB') \
                 .save(os.path.join(self.output_path, '{}.png'.format(name)))
         elif encoding == 'RGB_norm':
             png.from_array(np.uint8(image * 255), 'RGB').save(os.path.join(self.output_path, '{}.png'.format(name)))
@@ -99,5 +99,6 @@ class Evaluation(object):
 
 
 if __name__ == '__main__':
-    evaluation_class = Evaluation(autotest=False)
+    evaluation_class = Evaluation(autotest=False,
+                                  temperature=0.38)
     evaluation_class.eval()
