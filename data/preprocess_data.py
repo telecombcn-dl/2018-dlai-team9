@@ -1,9 +1,6 @@
-# This file contains the code to pre-process the data (RGB to CIE Lab) plus inverse prior color probability mapping
-# and also the calculation of the aforementioned prior probabilities.
 import os
 import sys
 import numpy as np
-
 sys.path.append(os.path.join(os.path.dirname(__file__), *[os.path.pardir]))
 from utils.mappings import inverse_h
 from skimage.transform import resize
