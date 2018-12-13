@@ -44,7 +44,7 @@ if __name__ == "__main__":
 
     """ DATA LOADING """
     print("Loading data ...")
-    dataset_file = './images_realpaths.txt'
+    dataset_file = '/imatge/pvidal/dlai-flowers/train_flowers_realpaths.txt'
     d = Data2()
  
     print('Creating generators ...')
@@ -72,11 +72,10 @@ if __name__ == "__main__":
                             validation_steps=steps_per_val,
                             callbacks = [tensorboard])
 
-        model.save('olakase.h5')
-        np.save('olakase', history.history)
+        model.save('flowers_weightedxentropy_lr_0001.h5')
+
 
     except KeyboardInterrupt:
-        model.save('olakase.h5')
-        np.save('olakase', history.history)
+        model.save('flowers_weightedxentropy_lr_0001.h5')
 
     print("Training finished")

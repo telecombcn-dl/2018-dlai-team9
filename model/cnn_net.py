@@ -147,6 +147,7 @@ def compile(model, lr=0.005, optimizer_name='Adam', loss_name='cross_entropy_wei
 
     print('using loss {}'.format(loss))
     model.compile(optimizer=optimizer, loss=loss, metrics=metrics)
+
     print('model compiled')
     return model
 

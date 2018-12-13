@@ -160,8 +160,8 @@ class Data2(object):
                     inputs = np.array(inputs)
                     labels = np.array(labels)
                     if inputs.shape == (batch, 256, 256, 1) and labels.shape == (batch, 64, 64, 313):
-                        while True:
-                            yield (inputs, labels)
+                        # while True:
+                        yield (inputs, labels)
                     return_list = []
             print('Valid samples: {}'.format(valid_samples))
             print('Invalid shape samples: {}'.format(invalid_samples1))

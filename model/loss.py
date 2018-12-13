@@ -204,7 +204,7 @@ def calculate_weights_maps(z_true, prior_probs, len_q=313., _lambda=0.5):
     :param _lambda: 0.5
     :return: weights maps [dim0, dim1]
     """
-    weights = 1 / ((1 - _lambda) * prior_probs + _lambda / len_q)
+    weights = 1 / ((1 - _lambda) * prior_probs + _lambda / len_q)/101.3784919
     q = tf.argmax(z_true, axis=3)
     weights_maps = tf.gather(weights, q)  # [batch, dim0, dim1]
     return weights_maps
@@ -241,7 +241,7 @@ def categorical_crossentropy_weighted(prior_probs, input_shape):
         cross_entropy = tf.reduce_sum(cross_entropy, axis=3)
         weighted_cross_entropy = tf.multiply(cross_entropy, tf.cast(weights_maps, tf.float32))
         weighted_cross_entropy = tf.reduce_sum(weighted_cross_entropy)
-        return weighted_cross_entropy
+        return weighted_cross_entropy/(64.*64.*313.)
 
     return categorical_crossentropy
 
