@@ -1,17 +1,12 @@
-import os
-import socket
 import numpy as np
 import utils.helpers as helpers
 from sklearn.neighbors import NearestNeighbors
 
 # On import run:
-if socket.gethostname() == 'rimmek-XPS-15':
-    path = '/home/rimmek/MATT/DLAI/2018-dlai-team9/data/'
-else:
-    path = '/imatge/pvidal/2018-dlai-team9/data/'
-
-prior_probs = np.load(os.path.join(path, 'prior_probs.npy'))
-pts_in_hull = np.load(os.path.join(path, 'pts_in_hull.npy'))
+# prior_probs = np.load('/imatge/pvidal/2018-dlai-team9/data/prior_probs.npy')
+prior_probs = np.load('/home/adribarja/Documents/COLE/Q1/DLAI/2018-dlai-team9/data/prior_probs.npy')
+# pts_in_hull = np.load('/imatge/pvidal/2018-dlai-team9/data/pts_in_hull.npy')
+pts_in_hull = np.load('/home/adribarja/Documents/COLE/Q1/DLAI/2018-dlai-team9/data/pts_in_hull.npy')
 
 len_Q = pts_in_hull.shape[0]
 nn = NearestNeighbors(algorithm='ball_tree').fit(pts_in_hull)
@@ -39,7 +34,7 @@ def inverse_h(y, neighbors=10, sigma=5.0):
     return q
 
 
-def h(q, temp=1.0):
+def h(q, temp=None):
     """
     Returns the H mapping. That is, from Q to Y.
     :param q: Array of H*W*Q dimensions
@@ -47,6 +42,8 @@ def h(q, temp=1.0):
     :type temp: float
     :return: Array of H*W*2 dimensions
     """
-    q = np.power(q, 1.0/temp) / np.sum(np.power(q, 1.0/temp), axis=2)[:, :, None]
+    if temp is not None:
+        # TODO: temperature scaling
+        pass
     y = np.tensordot(q, pts_in_hull, axes=(2, 0))
     return y
