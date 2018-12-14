@@ -2,6 +2,7 @@
 import time
 import numpy as np
 import data.data_generator as data
+from keras.models import load_model
 from keras.callbacks import TensorBoard
 from model.cnn_net import graph, compile_model
 
@@ -17,6 +18,7 @@ class Trainer(object):
         self.TRAIN_SIZE = 0.8
         self.LOSS_NAME = 'cross_entropy_weighted'
         self.MODEL_NAME = 'flowers_weightedxentropy_lr_0001.h5'
+        self.TRAIN_FROM_RESTORE_PATH = None
 
         # Dataset file_paths and prior_probs
         self.prior_probs = np.load('data/prior_probs.npy')
@@ -32,7 +34,10 @@ class Trainer(object):
 
     def train(self):
         self._define_logger()
-        self._define_model()
+        if self.TRAIN_FROM_RESTORE_PATH is None:
+            self._define_model()
+        else:
+            self.model = load_model(self.TRAIN_FROM_RESTORE_PATH)
         self._prepare_data()
         self._print_params()
         self._train()
