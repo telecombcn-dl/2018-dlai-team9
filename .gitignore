@@ -1,0 +1,5 @@
+outputs/
+*.png
+*.jpg
+*.h5
+.idea/
