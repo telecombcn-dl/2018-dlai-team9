@@ -6,9 +6,9 @@ from skimage.transform import resize
 from utils.mappings import mapped_batch
 
 
-def split_train_val(dataset_file, train_size, num_images=None):
+def split_train_val(dataset_filepath, train_size, num_images=None):
     listdir = list()
-    with open(dataset_file, 'r') as fr:
+    with open(dataset_filepath, 'r') as fr:
         for path in fr:
             path = path.strip('\n')
             listdir.append(path)
@@ -19,9 +19,9 @@ def split_train_val(dataset_file, train_size, num_images=None):
     return listdir[:l_train], listdir[l_train:num_images]
 
 
-def data_generator(listdir, image_input_shape, batch=100):
-    w = image_input_shape[0]
-    h = image_input_shape[1]
+def data_generator(listdir, input_shape, batch_size=100):
+    w = input_shape[0]
+    h = input_shape[1]
     print('Dataset size = {0}'.format(len(listdir)))
     return_list = list()
     while True:
@@ -37,9 +37,9 @@ def data_generator(listdir, image_input_shape, batch=100):
                     continue
             except:
                 invalid_samples2 += 1
-            if not (len(return_list) + 1) % (batch + 1):
+            if not (len(return_list) + 1) % (batch_size + 1):
                 inputs, labels = mapped_batch(return_list)
-                if inputs.shape == (batch, 256, 256, 1) and labels.shape == (batch, 64, 64, 313):
+                if inputs.shape == (batch_size, 256, 256, 1) and labels.shape == (batch_size, 64, 64, 313):
                     # while True:
                     yield (inputs, labels)
                 return_list = list()
@@ -47,7 +47,7 @@ def data_generator(listdir, image_input_shape, batch=100):
         print('Invalid shape samples: {}'.format(invalid_samples1))
         print('Invalid format samples: {}'.format(invalid_samples2))
         inputs, labels = mapped_batch(return_list)
-        if inputs.shape == (batch, 256, 256, 1) and labels.shape == (batch, 64, 64, 313):
+        if inputs.shape == (batch_size, 256, 256, 1) and labels.shape == (batch_size, 64, 64, 313):
             yield (inputs, labels)
 
 
