@@ -1,4 +1,5 @@
 outputs/
+models/
 *.png
 *.jpg
 *.h5
