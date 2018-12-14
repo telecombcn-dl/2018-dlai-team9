@@ -346,7 +346,6 @@ def compile_model(model, lr=0.005, optimizer_name='Adam', loss_name='cross_entro
 
     metrics = [mse, cc]
 
-    print('Using loss {}'.format(loss))
     model.compile(optimizer=optimizer, loss=loss, metrics=metrics)
     print('Model compiled')
     return model

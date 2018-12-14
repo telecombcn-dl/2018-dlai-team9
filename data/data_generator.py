@@ -13,7 +13,7 @@ def split_train_val(dataset_filepath, train_size, num_images=None):
             path = path.strip('\n')
             listdir.append(path)
     num_images = min(num_images, len(listdir)) if num_images is not None else len(listdir)
-    l_train = train_size * num_images
+    l_train = int(train_size * num_images)
     np.random.seed(42)
     np.random.shuffle(listdir)
     return listdir[:l_train], listdir[l_train:num_images]

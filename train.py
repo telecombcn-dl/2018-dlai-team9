@@ -15,10 +15,11 @@ class Trainer(object):
         self.INPUT_SHAPE = [256, 256, 1]
         self.N_IMAGES_TRAIN_VAL = None
         self.TRAIN_SIZE = 0.8
+        self.LOSS_NAME = 'cross_entropy_weighted'
         self.MODEL_NAME = 'flowers_weightedxentropy_lr_0001.h5'
 
         # Dataset file_paths and prior_probs
-        self.prior_probs = np.load('/imatge/pvidal/2018-dlai-team9/data/prior_probs.npy')
+        self.prior_probs = np.load('data/prior_probs.npy')
         self.dataset_filepath = '/imatge/pvidal/dlai-flowers/train_flowers_realpaths.txt'
 
         # Class variables
@@ -30,31 +31,32 @@ class Trainer(object):
         self.steps_per_epoch = 0
 
     def train(self):
-        self._print_params()
         self._define_logger()
         self._define_model()
         self._prepare_data()
+        self._print_params()
         self._train()
 
     def _print_params(self):
-        print('----------------------')
-        print('----- PARAMETERS -----')
-        print('----------------------')
-        print('\tModel Name: {}'.format(self.MODEL_NAME))
-        print('\tLearning Rate = {}'.format(self.LR))
-        print('\tBatch Size = {}'.format(self.BATCH_SIZE))
+        print('------------------------------------------------------------------')
+        print('--------------------------- PARAMETERS ---------------------------')
+        print('------------------------------------------------------------------')
+        print('\tModel Name:        {}'.format(self.MODEL_NAME))
+        print('\tLoss Name:         {}'.format(self.LOSS_NAME))
+        print('\tLearning Rate =    {}'.format(self.LR))
+        print('\tBatch Size =       {}'.format(self.BATCH_SIZE))
+        print('\tNumber of Epochs = {}'.format(self.N_EPOCHS))
         if self.N_IMAGES_TRAIN_VAL is not None:
             print('\tUsing only {} images.'.format(self.N_IMAGES_TRAIN_VAL))
         else:
             print('\tUsing all the images in the real_paths file.')
-        print('\tFrom which {}% will be used as Training data and the remaining {}% as Validation data.'
-              .format(self.TRAIN_SIZE*100., (1.-self.TRAIN_SIZE)*100.))
-        print('\tNumber of Epochs = {}'.format(self.N_EPOCHS))
+        print('\tFrom which {:.2f}% is Training data\n'
+              '\t       and {:.2f}% is Validation data.'
+              .format(round(self.TRAIN_SIZE*100., 2), round((1.-self.TRAIN_SIZE)*100., 2)))
         print('\tInput shape: {}'.format(self.INPUT_SHAPE))
-
-        print('----------------------')
-        print('----------------------')
-        print('----------------------')
+        print('------------------------------------------------------------------')
+        print('------------------------------------------------------------------')
+        print('------------------------------------------------------------------')
 
     def _define_logger(self):
         self.tensorboard = TensorBoard(log_dir="logs/{}".format(time.time()), update_freq='batch')
@@ -74,7 +76,7 @@ class Trainer(object):
     def _define_model(self):
         print("Defining architecture... ")
         self.model = graph(self.INPUT_SHAPE)
-        self.model = compile_model(self.model, lr=self.LR, prior_probs=self.prior_probs)
+        self.model = compile_model(self.model, lr=self.LR, loss_name=self.LOSS_NAME, prior_probs=self.prior_probs)
         self.model.summary()
 
     def _train(self):
