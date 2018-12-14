@@ -19,7 +19,7 @@ class Trainer(object):
 
         # Dataset file_paths and prior_probs
         self.prior_probs = np.load('/imatge/pvidal/2018-dlai-team9/data/prior_probs.npy')
-        self.dataset_file = '/imatge/pvidal/dlai-flowers/train_flowers_realpaths.txt'
+        self.dataset_filepath = '/imatge/pvidal/dlai-flowers/train_flowers_realpaths.txt'
 
         # Class variables
         self.model = None
@@ -61,15 +61,13 @@ class Trainer(object):
 
     def _prepare_data(self):
         print('Creating data generators...')
-        listdir_train, listdir_val = data.split_train_val(self.dataset_file,
-                                                          num_images_train=self.N_IMAGES_TRAIN_VAL,
-                                                          train_size=self.TRAIN_SIZE)
-        self.generator_train = data.data_generator(listdir=listdir_train,
-                                                   image_input_shape=self.INPUT_SHAPE,
-                                                   batch=self.BATCH_SIZE)
-        self.generator_val = data.data_generator(listdir=listdir_val,
-                                                 image_input_shape=self.INPUT_SHAPE,
-                                                 batch=self.BATCH_SIZE)
+        listdir_train, listdir_val = data.split_train_val(dataset_filepath=self.dataset_filepath,
+                                                          train_size=self.TRAIN_SIZE,
+                                                          num_images=self.N_IMAGES_TRAIN_VAL)
+        self.generator_train = data.data_generator(listdir=listdir_train, input_shape=self.INPUT_SHAPE,
+                                                   batch_size=self.BATCH_SIZE)
+        self.generator_val = data.data_generator(listdir=listdir_val, input_shape=self.INPUT_SHAPE,
+                                                 batch_size=self.BATCH_SIZE)
         self.steps_per_epoch = len(listdir_train) / self.BATCH_SIZE
         self.steps_per_val = len(listdir_val) / self.BATCH_SIZE
 
