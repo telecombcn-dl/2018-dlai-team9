@@ -6,23 +6,17 @@ from skimage.transform import resize
 from utils.mappings import mapped_batch
 
 
-def split_train_val(dataset_file, train_size, num_images_train=None):
+def split_train_val(dataset_file, train_size, num_images=None):
     listdir = list()
     with open(dataset_file, 'r') as fr:
         for path in fr:
             path = path.strip('\n')
             listdir.append(path)
-    listdir_len = len(listdir)
-    if num_images_train is not None and num_images_train < listdir_len:
-        l_train = train_size * num_images_train
-        l_val = num_images_train - l_train
-    else:
-        l_train = train_size * listdir_len
-        l_val = listdir_len - l_train
-
+    num_images = min(num_images, len(listdir)) if num_images is not None else len(listdir)
+    l_train = train_size * num_images
     np.random.seed(42)
     np.random.shuffle(listdir)
-    return listdir[:l_train], listdir[l_train:l_train + l_val]
+    return listdir[:l_train], listdir[l_train:num_images]
 
 
 def data_generator(listdir, image_input_shape, batch=100):
