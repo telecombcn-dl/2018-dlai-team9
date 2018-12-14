@@ -54,6 +54,7 @@ def categorical_crossentropy_weighted(prior_probs, input_shape):
         y_pred_flatten = K.flatten(y_predicted)
 
         y_pred_flatten = tf.Print(y_pred_flatten, [y_pred_flatten], message="This is y_pred_flatten: ")
+        y_true_flatten = tf.Print(y_true_flatten, [y_true_flatten], message="This is y_true_flatten: ")
 
         y_pred_flatten_log = -K.log(y_pred_flatten + K.epsilon())
         cross_entropy = tf.multiply(y_true_flatten, y_pred_flatten_log)
@@ -62,6 +63,8 @@ def categorical_crossentropy_weighted(prior_probs, input_shape):
 
         cross_entropy = tf.reshape(cross_entropy, original_input_shape)
         cross_entropy = tf.reduce_sum(cross_entropy, axis=3)
+
+        weights_flatten = tf.Print(weights_flatten, [weights_flatten], message="This is weights_flatten: ")
 
         weighted_cross_entropy = tf.multiply(K.flatten(cross_entropy), tf.cast(weights_flatten, tf.float32))
         weighted_cross_entropy = tf.reduce_sum(weighted_cross_entropy)
