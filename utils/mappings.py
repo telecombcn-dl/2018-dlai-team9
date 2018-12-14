@@ -2,6 +2,7 @@ import os
 import socket
 import numpy as np
 import utils.helpers as helpers
+from skimage.transform import resize
 from sklearn.neighbors import NearestNeighbors
 
 # On import run:
@@ -30,7 +31,7 @@ def inverse_h(y, neighbors=10, sigma=5.0):
     q_flat = np.zeros((len_y, len_Q))
     q_indices = np.arange(0, len_y, dtype='int')[:, np.newaxis]
     (d, i) = nn.kneighbors(y_flat, n_neighbors=neighbors)
-    weights = np.exp(-d ** 2 / (2 * sigma ** 2))
+    weights = np.exp(-d ** 2. / (2. * sigma ** 2.))
     weights = weights / np.sum(weights, axis=1)[:, np.newaxis]
     q_flat[q_indices, i] = weights
     q = helpers.unflatten_2d_array(q_flat, y)
@@ -45,6 +46,21 @@ def h(q, temp=1.0):
     :type temp: float
     :return: Array of H*W*2 dimensions
     """
-    q = np.power(q, 1.0/temp) / np.sum(np.power(q, 1.0/temp), axis=2)[:, :, None]
+    q = np.power(q, 1.0 / temp) / np.sum(np.power(q, 1.0 / temp), axis=2)[:, :, None]
     y = np.tensordot(q, pts_in_hull, axes=(2, 0))
     return y
+
+
+def mapped_batch(image_batch):
+    """
+    Given a batch of images, it returns two lists: one containing the lightness and another one containing the
+    color in the Q mapping.
+    :param image_batch: Batch of images and labels
+    :type image_batch: list
+    :return: inputs, labels
+    """
+    inputs, labels = list(), list()
+    for image in image_batch:
+        inputs.append(np.expand_dims(image[:, :, 0], axis=2))
+        labels.append(inverse_h(resize(image[:, :, 1:], (64, 64))))
+    return np.array(inputs), np.array(labels)

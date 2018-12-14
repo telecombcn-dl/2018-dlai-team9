@@ -1,12 +1,11 @@
 # This file contains the CNN definition
-from keras.optimizers import Adam
-from model.loss import categorical_crossentropy_weighted
-from keras.layers import Input, Activation, ZeroPadding2D, BatchNormalization, Conv2D, Deconv2D
 from keras.models import Model
-from keras.losses import categorical_crossentropy
-from keras.metrics import mse
-from keras.metrics import categorical_crossentropy as cc
+from keras.optimizers import Adam
 from keras.activations import softmax
+from keras.losses import categorical_crossentropy
+from model.loss import categorical_crossentropy_weighted
+from keras.metrics import mse, categorical_crossentropy as cc
+from keras.layers import Input, Activation, ZeroPadding2D, BatchNormalization, Conv2D, Deconv2D
 
 
 def graph(input_shape):
@@ -15,8 +14,6 @@ def graph(input_shape):
     :param input_shape: shape of the input
     :return: a model instance in Keras
     """
-
-    # Define the input placeholder as a tensor with shape input_shape.
     x_input = Input(input_shape)
 
     # ***** conv1 *****
@@ -111,26 +108,20 @@ def graph(input_shape):
     x = Conv2D(313, (1, 1), name='conv8_313')(x)
     x = Activation(activation=softmax)(x)
     model = Model(inputs=x_input, outputs=x, name='graph')
-
     return model
 
 
-def compile(model, lr=0.005, optimizer_name='Adam', loss_name='cross_entropy_weighted', prior_probs=None):
+def compile_model(model, lr=0.005, optimizer_name='Adam', loss_name='cross_entropy_weighted', prior_probs=None):
     # Define Optimizer
     if optimizer_name == 'Adam':
-        beta_1 = 0.9
-        beta_2 = 0.999
-        epsilon = 10 ** (-8)
-        optimizer = Adam(lr=lr, beta_1=beta_1, beta_2=beta_2, epsilon=epsilon, clipnorm=1.)
+        optimizer = Adam(lr=lr, beta_1=0.9, beta_2=0.999, epsilon=10 ** (-8), clipnorm=1.)
     else:
         raise ValueError('Please, specify a valid optimizer')
 
     # Define Loss function
     if loss_name == 'cross_entropy':
-        print('Loss: cross_entropy')
         loss = categorical_crossentropy
     elif loss_name == 'cross_entropy_weighted':
-        print('Loss: Cross Entropy Weighted')
         loss = categorical_crossentropy_weighted(prior_probs)
     else:
         raise ValueError('Please, specify a valid loss function')

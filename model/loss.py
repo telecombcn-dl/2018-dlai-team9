@@ -3,16 +3,14 @@ import tensorflow as tf
 import keras.backend as K
 
 
-def calculate_weights_maps(z_true, prior_probs, len_q=313., _lambda=0.5):
+def calculate_weights_maps(z_true, prior_probs):
     """
     Calculates the weight maps
     :param z_true: [dim0, dim1, num_classes]
     :param prior_probs: probability of each color in ImageNet
-    :param len_q: 313 quantized levels
-    :param _lambda: 0.5
     :return: weights maps [dim0, dim1]
     """
-    weights = 1 / ((1 - _lambda) * prior_probs + _lambda / len_q) / 101.3784919
+    weights = 1. / (0.5 * prior_probs + 0.5 / 313.) / 101.3784919
     q = tf.argmax(z_true, axis=3)
     weights_maps = tf.gather(weights, q)  # [batch, dim0, dim1]
     return weights_maps
@@ -42,6 +40,6 @@ def categorical_crossentropy_weighted(prior_probs):
         cross_entropy = tf.reduce_sum(cross_entropy, axis=3)
         weighted_cross_entropy = tf.multiply(cross_entropy, tf.cast(weights_maps, tf.float32))
         weighted_cross_entropy = tf.reduce_sum(weighted_cross_entropy)
-        return weighted_cross_entropy / (64. * 64. * 313.)
+        return weighted_cross_entropy / 1282048.0  # (64 * 64 * 313)
 
     return categorical_crossentropy

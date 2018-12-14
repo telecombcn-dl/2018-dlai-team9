@@ -7,7 +7,7 @@ from skimage.transform import resize
 from skimage.color import rgb2lab, lab2rgb
 import os
 from joblib import Parallel, delayed
-from data.preprocess_data import mapped_batch
+from utils.mappings import mapped_batch
 
 
 # When using not in UPC cluster

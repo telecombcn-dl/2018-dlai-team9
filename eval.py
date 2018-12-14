@@ -7,7 +7,7 @@ from PIL import Image
 from skimage.transform import resize
 from skimage.color import rgb2lab, lab2rgb
 from keras.models import load_model
-from utils import mappings
+from utils import mappings, helpers
 
 
 class Evaluation(object):
@@ -39,14 +39,14 @@ class Evaluation(object):
         luminance, chromaticity = self.split_image(lab_resized_image)
 
         if not self.autotest:
-            self.load_model()
+            self.model = load_model(self.model_path)
             predicted_chromaticity = self.predict_chromaticity(luminance)
         else:
             predicted_chromaticity = mappings.h(mappings.inverse_h(chromaticity), temp=self.temperature)
 
         pred_image = self.merge_and_resize_image(predicted_chromaticity)
-        self.show_image(pred_image, title='Predicted image', encoding='LAB')
-        self.show_image(self.ori_image, title='Original image', encoding='RGB')
+        helpers.show_image(pred_image, encoding='LAB')
+        helpers.show_image(self.ori_image, encoding='RGB')
         self.save_image(pred_image, name='predicted_image')
         self.save_image(self.ori_image, name='original_image', encoding='RGB')
 
@@ -64,9 +64,6 @@ class Evaluation(object):
         chromaticity = resize((image[:, :, 1:]), (64, 64), mode='constant', anti_aliasing=True)
         return luminance, chromaticity
 
-    def load_model(self):
-        self.model = load_model(self.model_path)
-
     def predict_chromaticity(self, luminance):
         luminance_expanded = np.expand_dims(luminance, axis=0)
         q_chroma = self.model.predict(luminance_expanded, batch_size=1)[0]
@@ -78,15 +75,6 @@ class Evaluation(object):
         upsampled_chroma = resize(chromaticity, (h, w), mode='constant', anti_aliasing=True)
         image = np.concatenate((self.ori_luminance, upsampled_chroma), axis=2)
         return image
-
-    @staticmethod
-    def show_image(img_array, title=None, encoding='RGB_norm'):
-        if encoding == 'LAB':
-            Image.fromarray(np.uint8(lab2rgb(img_array) * 255)).show(title=title)
-        elif encoding == 'RGB_norm':
-            Image.fromarray(np.uint8(img_array * 255)).show(title=title)
-        elif encoding == 'RGB':
-            Image.fromarray(img_array).show(title=title)
 
     def save_image(self, image, name, encoding='LAB'):
         if encoding == 'LAB':

@@ -1,25 +1,24 @@
 # This file trains the network.
 import time
 import numpy as np
-from model.cnn_net import graph, compile
-from data.data_generator import Data
+import data.data_generator as data
 from keras.callbacks import TensorBoard
+from model.cnn_net import graph, compile_model
 
 
 class Trainer(object):
     def __init__(self):
         # Parameters
-        self.INPUT_SHAPE = [256, 256, 1]
+        self.LR = 0.0001
         self.N_EPOCHS = 50
         self.BATCH_SIZE = 25
-        self.LR = 0.0001
-        self.N_IMAGES_TRAIN_VAL = 12677
+        self.INPUT_SHAPE = [256, 256, 1]
+        self.N_IMAGES_TRAIN_VAL = None
         self.TRAIN_SIZE = 0.8
         self.MODEL_NAME = 'flowers_weightedxentropy_lr_0001.h5'
 
-        # Dataset and prior_probs
+        # Dataset file_paths and prior_probs
         self.prior_probs = np.load('/imatge/pvidal/2018-dlai-team9/data/prior_probs.npy')
-        # self.prior_probs = np.load('/home/adribarja/Documents/COLE/Q1/DLAI/2018-dlai-team9/data/prior_probs.npy')
         self.dataset_file = '/imatge/pvidal/dlai-flowers/train_flowers_realpaths.txt'
 
         # Class variables
@@ -31,19 +30,37 @@ class Trainer(object):
         self.steps_per_epoch = 0
 
     def train(self):
-        self.define_logger()
-        self.define_model()
-        self.prepare_data()
-        print('Start training...')
+        self._print_params()
+        self._define_logger()
+        self._define_model()
+        self._prepare_data()
         self._train()
-        print("Training finished")
 
-    def define_logger(self):
+    def _print_params(self):
+        print('----------------------')
+        print('----- PARAMETERS -----')
+        print('----------------------')
+        print('\tModel Name: {}'.format(self.MODEL_NAME))
+        print('\tLearning Rate = {}'.format(self.LR))
+        print('\tBatch Size = {}'.format(self.BATCH_SIZE))
+        if self.N_IMAGES_TRAIN_VAL is not None:
+            print('\tUsing only {} images.'.format(self.N_IMAGES_TRAIN_VAL))
+        else:
+            print('\tUsing all the images in the real_paths file.')
+        print('\tFrom which {}% will be used as Training data and the remaining {}% as Validation data.'
+              .format(self.TRAIN_SIZE*100., (1.-self.TRAIN_SIZE)*100.))
+        print('\tNumber of Epochs = {}'.format(self.N_EPOCHS))
+        print('\tInput shape: {}'.format(self.INPUT_SHAPE))
+
+        print('----------------------')
+        print('----------------------')
+        print('----------------------')
+
+    def _define_logger(self):
         self.tensorboard = TensorBoard(log_dir="logs/{}".format(time.time()), update_freq='batch')
 
-    def prepare_data(self):
+    def _prepare_data(self):
         print('Creating data generators...')
-        data = Data()
         listdir_train, listdir_val = data.split_train_val(self.dataset_file,
                                                           num_images_train=self.N_IMAGES_TRAIN_VAL,
                                                           train_size=self.TRAIN_SIZE)
@@ -56,14 +73,14 @@ class Trainer(object):
         self.steps_per_epoch = len(listdir_train) / self.BATCH_SIZE
         self.steps_per_val = len(listdir_val) / self.BATCH_SIZE
 
-    def define_model(self):
+    def _define_model(self):
         print("Defining architecture... ")
-        print('Input shape: {}'.format(self.INPUT_SHAPE))
         self.model = graph(self.INPUT_SHAPE)
-        self.model = compile(self.model, lr=self.LR, prior_probs=self.prior_probs)
+        self.model = compile_model(self.model, lr=self.LR, prior_probs=self.prior_probs)
         self.model.summary()
 
     def _train(self):
+        print('Start training...')
         try:
             self.model.fit_generator(generator=self.generator_train,
                                      steps_per_epoch=self.steps_per_epoch,
@@ -75,6 +92,7 @@ class Trainer(object):
             self.model.save(self.MODEL_NAME)
         except KeyboardInterrupt:
             self.model.save(self.MODEL_NAME)
+        print("Training finished")
 
 
 if __name__ == "__main__":
