@@ -100,9 +100,9 @@
 					<div class="6u">
 						<section>
 							<h3>State of the art</h3>
-							<p>Similar systems have been develoed by other works, as <a href= "ttps://link.springer.com/chapter/10.1007/978-3-319-46493-0_35"> Larsson et al.</a> , <a href= " https://dl.acm.org/citation.cfm?id=2925974"> Iizuka et al.</a>   <a href= "https://www.cv-foundation.org/openaccess/content_iccv_2015/papers/Cheng_Deep_Colorization_ICCV_2015_paper.pdf" >Cheng Z et al.</a> ), however the results tend to be desaturated. 
+							<p>Similar systems have been develoed by other works, as <a href= "https://link.springer.com/chapter/10.1007/978-3-319-46493-0_35"> Larsson et al.</a> , <a href= " https://dl.acm.org/citation.cfm?id=2925974"> Iizuka et al.</a>   <a href= "https://www.cv-foundation.org/openaccess/content_iccv_2015/papers/Cheng_Deep_Colorization_ICCV_2015_paper.pdf" >Cheng Z et al.</a> ), however the results tend to be desaturated. 
 
-							The methods differ in their CNN architectures and loss functions. While our paper  uses a classiffication loss, with rebalanced rare classes, Larsson et al. use an un-rebalanced classiffcation loss, and Iizuka et al. use a regression loss. About the CNN architectures. Larsson et al. use hypercolumns on a VGG network and Iizuka et al. use a two-stream architecture in which they use global and local features.
+							The methods differ in their CNN architectures and loss functions. While our paper  uses a weighted classiffication loss to rebalance rare classes, Larsson et al. use an un-rebalanced classiffcation loss, and Iizuka et al. use a regression loss. About the CNN architectures. Larsson et al. use hypercolumns on a VGG network and Iizuka et al. use a two-stream architecture in which they use global and local features.
 
 							Generative Adversarial Nets (GAN) have also been used to predict color (i. e.  <a href= "http://cs231n.stanford.edu/reports/2017/pdfs/302.pdf" > Qiwen Fu et al.</a> ).
 							</p>
@@ -200,10 +200,10 @@
 						<section>
 							<h2>Overfitting a mini-batch</h2>
 							</a>
-							<p> The first resuts we obtained from our model evidenced that it was not able to predict any color of the input image.
+							<p> The first resuts we obtained from our model evidenced that it was not able to predict correctly any color of the input image and the predictions seemed to be random.
 								<br><br>
 							<a class="image fit"><img src="images/first_results.png" alt="" /></a>
-							Thus, we decided to overfit the model by using a mini-batch of 25 images to ensure that the model was working properly. It is a way of doing a quick sanity test because if the model cannot overfit a small amount of data, there is a simple bug somewhere. Once we achieved to overfit the model, we trained the model with more inputs.
+							Thus, we decided to overfit the model by using a mini-batch of 25 images to ensure that the model was working properly. This technique is a way of doing a quick sanity test because if the model cannot overfit a small amount of data, there is a simple bug somewhere. Once we achieved to overfit the model, we trained the model with more inputs.
 							<br><br>
 							<a class="image fit"><img src="images/mini_batch_overfitted.png" alt=""/></a>
 							</p>
@@ -212,7 +212,7 @@
 					<div class="6u">
 						<section>
 							<h2>Trainig with different loss functions</h2>
-							<p> We decided to train and test our model with two different loss functions: The Mean Squared Error and the Weighted Cross Entropy, hence we could compare the results and we proved that the Weighted Cross Entropy is the loss that provides the more bright and realistic results. </p>
+							<p> We decided to train our model with two different loss functions: The Mean Squared Error and the Weighted Cross Entropy. We obtained two different models to test and we compared the results. We prove that the Weighted Cross Entropy is the loss that provides the more bright and realistic results. </p>
 							<img src="images/mse_mini_batch.png" alt="" style="width:512px;"> 
 							
 							
