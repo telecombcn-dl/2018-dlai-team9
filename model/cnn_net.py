@@ -340,6 +340,7 @@ def unet(input_shape=(256, 256, 1), l1=0.00001, l2=0.005):
 def get_unet(input_shape, **kwargs):
     return unet(input_shape)
 
+
 def compile(model, lr=0.005, optimizer_name='Adam', loss_name='cross_entropy_weighted', prior_probs=None, input_shape= None):
     # Define Optimizer
     if optimizer_name == 'Adam':
@@ -363,9 +364,9 @@ def compile(model, lr=0.005, optimizer_name='Adam', loss_name='cross_entropy_wei
         raise ValueError('Please, specify a valid loss function!')
 
     # TODO: Define Metrics
-    metrics = [categorical_accuracy]
+    # metrics =
 
-    model.compile(optimizer=optimizer, loss=loss, metrics=metrics)
+    model.compile(optimizer=optimizer, loss=loss)
 
     return model
 

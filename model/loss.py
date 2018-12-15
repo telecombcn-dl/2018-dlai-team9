@@ -16,13 +16,13 @@ def calculate_weights_maps(z_true, prior_probs, input_shape, len_q=313, _lambda=
     """
     batch_size = input_shape[0]
 
-    weights = 1 / ((1 - _lambda) * prior_probs + _lambda / len_q)
+    weights = 0.0098640252 / (0.5 * prior_probs + 0.001597444)
     q = tf.argmax(z_true, axis=3)  # [batch, dim0, dim1]
     # q = K.flatten(q)
 
     weights_maps = tf.gather(weights, q)  # [batch, dim0, dim1]
 
-    weights_maps = tf.reshape(weights_maps, [10, 64, 64])
+    weights_maps = tf.reshape(weights_maps, [15, 256, 256])
 
     return weights_maps
 
@@ -47,14 +47,14 @@ def categorical_crossentropy_weighted(prior_probs, input_shape):
              Categorical cross-entropy loss value
         """
 
-        original_input_shape = [10, 64, 64, 313]
+        original_input_shape = [15, 256, 256, 313]
         weights_maps = calculate_weights_maps(z_true=y_true, prior_probs=prior_probs, input_shape=input_shape)
         weights_flatten = K.flatten(weights_maps)
         y_true_flatten = K.flatten(y_true)
         y_pred_flatten = K.flatten(y_predicted)
 
-        y_pred_flatten = tf.Print(y_pred_flatten, [y_pred_flatten], message="This is y_pred_flatten: ")
-        y_true_flatten = tf.Print(y_true_flatten, [y_true_flatten], message="This is y_true_flatten: ")
+        # y_pred_flatten = tf.Print(y_pred_flatten, [y_pred_flatten], message="This is y_pred_flatten: ")
+        # y_true_flatten = tf.Print(y_true_flatten, [y_true_flatten], message="This is y_true_flatten: ")
 
         y_pred_flatten_log = -K.log(y_pred_flatten + K.epsilon())
         cross_entropy = tf.multiply(y_true_flatten, y_pred_flatten_log)
@@ -64,10 +64,10 @@ def categorical_crossentropy_weighted(prior_probs, input_shape):
         cross_entropy = tf.reshape(cross_entropy, original_input_shape)
         cross_entropy = tf.reduce_sum(cross_entropy, axis=3)
 
-        weights_flatten = tf.Print(weights_flatten, [weights_flatten], message="This is weights_flatten: ")
+        # weights_flatten = tf.Print(weights_flatten, [weights_flatten], message="This is weights_flatten: ")
 
         weighted_cross_entropy = tf.multiply(K.flatten(cross_entropy), tf.cast(weights_flatten, tf.float32))
-        weighted_cross_entropy = tf.reduce_sum(weighted_cross_entropy)
+        weighted_cross_entropy = tf.reduce_sum(weighted_cross_entropy)/(256*256*313)
 
         return weighted_cross_entropy
 

@@ -17,5 +17,5 @@ def mapped_batch(image_batch):
     inputs, labels = list(), list()
     for i, image in enumerate(image_batch):
         inputs.append(np.expand_dims(image[:, :, 0], axis=2))
-        labels.append(resize(inverse_h(image[:, :, 1:]), (64, 64)))
+        labels.append(resize(inverse_h(image[:, :, 1:]), (256, 256)))
     return np.array(inputs), np.array(labels)

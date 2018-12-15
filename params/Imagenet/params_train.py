@@ -5,7 +5,7 @@ def get_params():
     params = {
         p.INPUT_SHAPE: [256, 256, 1],  # Imagenet size
         p.N_EPOCHS: 50,
-        p.BATCH_SIZE: 10,
+        p.BATCH_SIZE: 15,
         p.LR: 0.00003,  # Learning rate
 
         p.N_IMAGES_TRAIN_VAL: 456567,
