@@ -54,7 +54,7 @@ def data_generator(listdir, input_shape, batch_size=100):
 def load_image(h, w, path):
     img = Image.open(path)
     img_array = np.array(img)
-    img_array_reshaped = resize(img_array, (h, w))
+    img_array_reshaped = resize(img_array, (h, w), mode='constant', anti_aliasing=True)
     img_array_reshaped_lab = rgb2lab(img_array_reshaped)
     return img_array_reshaped_lab
 

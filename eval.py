@@ -28,9 +28,12 @@ class Evaluation(object):
     @staticmethod
     def parse_arguments():
         parser = argparse.ArgumentParser(description='Evaluation inputs')
-        parser.add_argument('-i', '--input_image', type=str, required=True,
-                            help='Black and white image to be colorized')
-        parser.add_argument('-m', '--model_path', type=str, help='Trained model')
+        parser.add_argument('-i', '--input_image', type=str,
+                            help='Black and white image to be colorized',
+                            default='/home/rimmek/MATT/DLAI/2018-dlai-team9/data/test_images/dlai-flowers'
+                                    '/oxford8189/image_04793.jpg')
+        parser.add_argument('-m', '--model_path', type=str, help='Trained model',
+                            default='/home/rimmek/MATT/DLAI/2018-dlai-team9/models/flowers_weightedxentropy_lr_0001.h5')
 
         return parser.parse_args()
 

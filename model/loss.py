@@ -10,20 +10,20 @@ def calculate_weights_maps(z_true, prior_probs):
     :param prior_probs: probability of each color in ImageNet
     :return: weights maps [dim0, dim1]
     """
-    weights = 1. / (0.5 * prior_probs + 0.5 / 313.) / 101.3784919
+    weights = 0.0098640252 / (0.5 * prior_probs + 0.001597444)  # 1. / (0.5 * prior_probs + 0.5 / 313.) / 101.3784919
     q = tf.argmax(z_true, axis=3)
     weights_maps = tf.gather(weights, q)  # [batch, dim0, dim1]
     return weights_maps
 
 
-def categorical_crossentropy_weighted(prior_probs):
+def categorical_crossentropy_weighted_function(prior_probs):
     """
     Returns the weighted categorical cross-entropy loss function
     :param prior_probs: probability of each color in ImageNet
     :return: categorical xentropy function
     """
 
-    def categorical_crossentropy(y_true, y_pred):
+    def categorical_crossentropy_weighted(y_true, y_pred):
         """
         Computes weighted categorical cross-entropy loss for a softmax distribution in a hot-encoded 2D array
         with shape (num_samples, num_classes, dim0, dim1)
@@ -42,4 +42,4 @@ def categorical_crossentropy_weighted(prior_probs):
         weighted_cross_entropy = tf.reduce_sum(weighted_cross_entropy)
         return weighted_cross_entropy / 1282048.0  # (64 * 64 * 313)
 
-    return categorical_crossentropy
+    return categorical_crossentropy_weighted

@@ -3,11 +3,11 @@ from keras.optimizers import Adam
 from keras.regularizers import l1_l2
 from keras.models import Model
 from keras.losses import categorical_crossentropy
-from model.loss import categorical_crossentropy_weighted
-
+from model.loss import categorical_crossentropy_weighted_function
 from keras.activations import softmax
-from keras.metrics import mse, categorical_crossentropy as cc
-from keras.layers import Input, Activation, ZeroPadding2D, BatchNormalization, Conv2D, Deconv2D, MaxPooling2D, Concatenate, Add, UpSampling2D
+from keras.metrics import mse
+from keras.layers import Input, Activation, ZeroPadding2D, BatchNormalization, Conv2D, Deconv2D, MaxPooling2D, \
+    Concatenate, Add, UpSampling2D
 
 
 def graph(input_shape):
@@ -113,8 +113,8 @@ def graph(input_shape):
     return model
 
 
-def unet(input_shape=(256, 256, 1),l1=0.00001, l2=0.005):
-    # Hyperaparametre values
+def unet(input_shape=(256, 256, 1), l1=0.00001, l2=0.005):
+    # Hyper-parameters values
     initializer = 'he_normal'
     pool_size = (2, 2)
 
@@ -327,8 +327,6 @@ def unet(input_shape=(256, 256, 1),l1=0.00001, l2=0.005):
     return model
 
 
-
-
 def compile_model(model, lr=0.005, optimizer_name='Adam', loss_name='cross_entropy_weighted', prior_probs=None):
     # Define Optimizer
     if optimizer_name == 'Adam':
@@ -340,11 +338,11 @@ def compile_model(model, lr=0.005, optimizer_name='Adam', loss_name='cross_entro
     if loss_name == 'cross_entropy':
         loss = categorical_crossentropy
     elif loss_name == 'cross_entropy_weighted':
-        loss = categorical_crossentropy_weighted(prior_probs)
+        loss = categorical_crossentropy_weighted_function(prior_probs)
     else:
         raise ValueError('Please, specify a valid loss function')
 
-    metrics = [mse, cc]
+    metrics = [mse]
 
     model.compile(optimizer=optimizer, loss=loss, metrics=metrics)
     print('Model compiled')
