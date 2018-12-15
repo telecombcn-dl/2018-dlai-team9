@@ -16,9 +16,9 @@ class Trainer(object):
         self.N_IMAGES_TRAIN_VAL = None
         self.TRAIN_SIZE = 0.8
         self.LOSS_NAME = 'cross_entropy_weighted'
-        self.MODEL_NAME = 'flowers_weightedxentropy_lr_005_start_e8_e13_e5.h5'
+        self.MODEL_NAME = 'flowers_weightedxentropy_lr_005_start_e8_e13_e5_e5.h5'
         self.TRAIN_FROM_RESTORE_PATH = '/imatge/pvidal/2018-dlai-team9-joan/models/' \
-                                       'flowers_weightedxentropy_lr_005_start_e8_e13_weights.h5'
+                                       'flowers_weightedxentropy_lr_005_start_e8_e13_e5_weights.h5'
 
         # Dataset file_paths and prior_probs
         self.prior_probs = np.load('data/prior_probs.npy')

@@ -43,7 +43,7 @@ def data_generator(listdir, input_shape, batch_size=100):
                     # while True:
                     yield (inputs, labels)
                 return_list = list()
-        print('Valid samples: {}'.format(valid_samples))
+        print('\nValid samples: {}'.format(valid_samples))
         print('Invalid shape samples: {}'.format(invalid_samples1))
         print('Invalid format samples: {}'.format(invalid_samples2))
         inputs, labels = mapped_batch(return_list)
