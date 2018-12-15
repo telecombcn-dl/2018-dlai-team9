@@ -29,7 +29,7 @@
 					<li><a href="#architecture">Architecture</a></li>
 					<li><a href="#experiments">Experiments</a></li>
 					<li><a href="#problems_solutions">Problems and Solutions</a></li>
-					<li><a href="#Final approach: Colorization">Final approach</a></li>
+					<li><a href="#Results">Results</a></li>
 					<li><a href="#future_work">Future Work</a></li>
 					
 				</ul>
@@ -90,9 +90,9 @@
 						<section>
 							<h2>Abstract</h2>
 							<a class="image fit"><img src="images/colors.jpeg" alt="" /></a>
-							<p> The aim of this project is to generate realistic colorized images given a grayscale photograph as input, following and reproducing the ideas proposed in <a href="https://arxiv.org/pdf/1603.08511.pdf"> Colorful Image Colorization by Richard Zhang, Phillip Isola and Alexei A. Efros </a> that was implemented in Caffe.<br><br>
+							<p> The aim of this project is to generate realistic colorized images given a grayscale photograph as input , following and reproducing the ideas proposed in <a href="https://arxiv.org/pdf/1603.08511.pdf"> Colorful Image Colorization by Richard Zhang, Phillip Isola and Alexei A. Efros </a>.<br><br>
 
-							The model consists in a Convolutional Neural Network (CNN) implemented from scratch with Keras and Tensorflow. Given the source luminance, it predicts the corresponding a and b color channels of the image in the CIE Lab colorspace.
+							This paper formulates image colorization as a pixel level multimodal classification problem and Deep Learning techniques are used to solve it. In particular, the model consists in a Convolutional Neural Network (CNN) with multiple layers that we implemented from scratch with Keras and Tensorflow (The framework used in the paper is Caffe). Given the source luminance, taken from the grayscale image, the model predicts the corresponding a and b color channels of the image in the CIE Lab colorspace.
 							</p>
 							<a class="image fit"><img src="images/approach.png" alt="" /></a>
 						</section>
@@ -100,12 +100,21 @@
 					<div class="6u">
 						<section>
 							<h3>State of the art</h3>
-							<p> </p>
+							<p>Similar systems have been develoed by other works, as <a href= "ttps://link.springer.com/chapter/10.1007/978-3-319-46493-0_35"> Larsson et al.</a> , <a href= " https://dl.acm.org/citation.cfm?id=2925974"> Iizuka et al.</a>   <a href= "https://www.cv-foundation.org/openaccess/content_iccv_2015/papers/Cheng_Deep_Colorization_ICCV_2015_paper.pdf" >Cheng Z et al.</a> ), however the results tend to be desaturated. 
+
+							The methods differ in their CNN architectures and loss functions. While our paper  uses a classiffication loss, with rebalanced rare classes, Larsson et al. use an un-rebalanced classiffcation loss, and Iizuka et al. use a regression loss. About the CNN architectures. Larsson et al. use hypercolumns on a VGG network and Iizuka et al. use a two-stream architecture in which they use global and local features.
+
+							Generative Adversarial Nets (GAN) have also been used to predict color (i. e.  <a href= "http://cs231n.stanford.edu/reports/2017/pdfs/302.pdf" > Qiwen Fu et al.</a> ).
+							</p>
+
+
 						</section>	
 						<section>
 							<h3>Dataset</h3>
 							<a class="image fit"><img src="images/BW_bird.png" alt="" /></a>
-							<p> We used 2 datasets to train our model; ImageNet (ref) and a Flowers Image Dataset (ref). Predicting color has the nice property that training data is practically free. There is no need for humans to label data because any color photo can be used as a training example, simply by taking the image's L channel (luminance) as input and its ab channels (color) as the supervisory signal. Therefore, our algorithm uses a self-supervised approach to train by previously converting the source images to grayscale.</p>
+							<p> Two  datasets were used to train our model; the well known <a href="http://www.image-net.org"> ImageNet </a> and a flowers image dataset composed of several <a href= "https://www.kaggle.com/alxmamaev/flowers-recognition"> datasets from Kaggle</a> containing 14K images. Predicting color has the nice property that training data is practically free. There is no need for humans to label data because any color photo can be used as a training example, simply by taking the image's L channel (luminance) as input and its ab channels (color) as the supervisory signal. Therefore, we can say our algorithm uses a self-supervised approach to train by previously converting the source images to grayscale.<br><br>
+
+							We decided to use the flowers dataset because the model was training very slow with ImageNet, as it contains a large amount of images, and we were running out of time. </p>
 						</section>
 					</div>
 				</div>
@@ -143,7 +152,7 @@
 				<div class="row">
 					<div class="7u">
 						<section>
-							<h2>First approach: BEGAN Architecture</h2>
+							<h2>Approach</h2>
 							<a class="image fit"><img src="images/architecture.png" alt="" /></a>
 							<p> The architecture proposed in the <a href="https://arxiv.org/pdf/1603.08511.pdf"> Colorful Image Colorization paper </a> consists in a CNN composed by 8 layers.
 							Each layer refers to a block of 2 or 3 repeated convolution layers with a 3x3 filter and a ReLU activation function, followed by a Batch Normalization layer. To preserve the resolution within the block, a padding filter is used. <br> <br>
@@ -190,14 +199,20 @@
 					<div class="6u">
 						<section>
 							<h2>Overfitting a mini-batch</h2>
+							</a>
+							<p> The first resuts we obtained from our model evidenced that it was not able to predict any color of the input image.
+								<br><br>
+							<a class="image fit"><img src="images/first_results.png" alt="" /></a>
+							Thus, we decided to overfit the model by using a mini-batch of 25 images to ensure that the model was working properly. It is a way of doing a quick sanity test because if the model cannot overfit a small amount of data, there is a simple bug somewhere. Once we achieved to overfit the model, we trained the model with more inputs.
+							<br><br>
 							<a class="image fit"><img src="images/mini_batch_overfitted.png" alt=""/></a>
-							<p> We decided to overfit the model by using a mini-batch of 25 images to ensure that the model was working properly. It's a quick sanity test beause if the model can't overfit a small amount of data, thre is a simple bug somewhere. Once we achieved to overfit the model, we trained the model with more inputs.</p>
+							</p>
 						</section>
 					</div>
 					<div class="6u">
 						<section>
 							<h2>Trainig with different loss functions</h2>
-							<p> We decided to train and test our model with different loss functions to compare the results and to prove that the weighted crossentropy is the loss that provides the more realistic results. </p>
+							<p> We decided to train and test our model with two different loss functions: The Mean Squared Error and the Weighted Cross Entropy, hence we could compare the results and we proved that the Weighted Cross Entropy is the loss that provides the more bright and realistic results. </p>
 							<img src="images/mse_mini_batch.png" alt="" style="width:512px;"> 
 							
 							
@@ -237,9 +252,9 @@
 			</div>
 		</section>
 		
-		<section id="Final approach" class="wrapper style1">
+		<section id="Results" class="wrapper style1">
 			<header class="major">
-				<h2>Final approach</h2>
+				<h2>Results</h2>
 			</header>
 			<div class="container">
 				
@@ -260,17 +275,6 @@
 			</div>
 		</section>
 		
-		<section id="references" class="wrapper style2">
-			<div class="container">
-				<div class="row">
-					<div class="6u">
-						<section>
-							
-						</section>
-					</div>
-				</div>
-			</div>
-		</section>
 
 	</body>
 </html>
