@@ -103,7 +103,7 @@
 					<div class="6u">
 						<section>
 							<h3>State of the art</h3>
-							<p>Similar systems have been develoed by other works, as <a href= "https://link.springer.com/chapter/10.1007/978-3-319-46493-0_35"> Larsson et al.</a> , <a href= " https://dl.acm.org/citation.cfm?id=2925974"> Iizuka et al.</a>   <a href= "https://www.cv-foundation.org/openaccess/content_iccv_2015/papers/Cheng_Deep_Colorization_ICCV_2015_paper.pdf" >Cheng Z et al.</a> ), however the results tend to be desaturated. 
+							<p>Similar systems have been develoed by other works, as <a href= "https://link.springer.com/chapter/10.1007/978-3-319-46493-0_35"> Larsson et al.</a>, <a href= " https://dl.acm.org/citation.cfm?id=2925974"> Iizuka et al.</a>   <a href= "https://www.cv-foundation.org/openaccess/content_iccv_2015/papers/Cheng_Deep_Colorization_ICCV_2015_paper.pdf" >Cheng Z et al.</a> ), however the results tend to be desaturated. 
 
 							The methods differ in their CNN architectures and loss functions. While we use a weighted classification loss to rebalance rare classes, Larsson et al. use an un-rebalanced classification loss in a VGG network and Iizuka et al. use a regression loss in a two-stream architecture. 
 
@@ -188,6 +188,7 @@
 							<br>
 							In order to compare Z_pred predicted against the ground truth, we need to define a Z which it is the result of a soft-encoding from the truth colors to the space of quantized values. This Z is a soft 1-hot vector for the 5-nearest neighbors weighted with a Gaussinan kernel according to their distance to the truth color.
 							The first proposed objective function is the Mean-Squared Error loss between the ground truth Z and the predicted values Z_pred. This loss function was already implemented by Keras.<br>
+							<a class="image fit"><img src="images/loss_mse.png" alt="" /></a>
 
 							The MSE is not robust to inherent ambiguity and multimodal nature of the colorization problem. The MSE results in giving the mean color of the set to all images, in other words, giving grayish and desaturated images.
 							<br>
