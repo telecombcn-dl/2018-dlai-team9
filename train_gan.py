@@ -89,12 +89,6 @@ class Trainer(object):
         self.steps_per_epoch = 3
         self.steps_per_val = 3
 
-    def _define_model(self):
-        print("Defining architecture... ")
-        self.model = graph(self.INPUT_SHAPE)
-        self.model = compile_model(self.model, lr=self.LR, loss_name=self.LOSS_NAME, prior_probs=self.prior_probs)
-        self.model.summary()
-
     def _define_discriminator(self):
         print("Defining and compile discriminator architecture...")
         self.model_discriminator = discriminator()
