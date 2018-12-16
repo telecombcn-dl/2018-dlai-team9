@@ -140,7 +140,9 @@
 					<div class="5u">
 						<section>
 							<h2>Class rebalancing</h2>
-							<p> As explained in the paper our work is based on, not all colors have the same probability to appear in an image. In particular, grayish colors are the most probable. Therefore a neural net predicting only grayish colors has the highest chance of making a correct prediction. In order to avoid this behavior, a weighted categorical cross entropy loss is defined (explained later) which penalizes grayish predictions in order to encourage the net to make more vivid and saturated predictions. The weights used in this custom loss depend on the probability of each color to appear. Since defining a continuous probability function for each color would be hardly feasible, their approach consists of discretizing the color space in 313 different ab values. For each of those 313 values, their probability is computed using the ImageNet database. The discretization of 313 values can be found in the pts_in_hull.npy file and their probability in prior_probs.npy, both under the data/ directory. We copied these arrays from the repository of the original paper since computing them required processing the whole ImageNet dataset and was hardly teaching us much about deep learning. </p>
+							<p> As explained in the paper our work is based on, not all colors have the same probability to appear in an image. In particular, grayish colors are the most probable. Therefore a neural net predicting only grayish colors has the highest chance of making a correct prediction. In order to avoid this behavior, a weighted categorical cross entropy loss is defined (explained later) which penalizes grayish predictions in order to encourage the net to make more vivid and saturated predictions. The weights used in this custom loss depend on the probability of each color to appear. Since defining a continuous probability function for each color would be hardly feasible, their approach consists of discretizing the color space in 313 different ab values. For each of those 313 values, their probability is computed using the ImageNet database. <br>
+
+							The discretization of 313 values can be found in the pts_in_hull.npy file and their probability in prior_probs.npy, both under the data/ directory. We copied these arrays from the repository of the original paper since computing them required processing the whole ImageNet dataset and was hardly teaching us much about deep learning. </p>
 						</section>
 					</div>
 				</div>
@@ -182,14 +184,16 @@
 					<div class="5u">
 						<section>
 							<h2>Loss Functions: MSE and weighted cross-entropy</h2>
-							<a class="image fit"><img src="images/loss_function.png" alt="" /></a>
-							<p>We have tested the two objective functions proposed in [PAPER]: MSE and a weighted multinomial cross-entropy. <a href="https://arxiv.org/pdf/1603.08511.pdf"> Colorful Image Colorization by Richard Zhang, Phillip Isola and Alexei A. Efros </a> The input of our baseline CNN is the luminance channel X of an image with the size (H,W,1) and the output Z_pred is the predicted probability distribution over a set of possible colors of shape (H,W,313), as it is explained in the class rebalancing section.
+							<p>We have tested the two objective functions proposed in :  <a href="https://arxiv.org/pdf/1603.08511.pdf"> Colorful Image Colorization</a> MSE and a weighted multinomial cross-entropy. The input of our baseline CNN is the luminance channel X of an image with the size (H,W,1) and the output Z_pred is the predicted probability distribution over a set of possible colors of shape (H,W,313), as it is explained in the class rebalancing section.
 							<br>
 							In order to compare Z_pred predicted against the ground truth, we need to define a Z which it is the result of a soft-encoding from the truth colors to the space of quantized values. This Z is a soft 1-hot vector for the 5-nearest neighbors weighted with a Gaussinan kernel according to their distance to the truth color.
 							The first proposed objective function is the Mean-Squared Error loss between the ground truth Z and the predicted values Z_pred. This loss function was already implemented by Keras.<br>
 
 							The MSE is not robust to inherent ambiguity and multimodal nature of the colorization problem. The MSE results in giving the mean color of the set to all images, in other words, giving grayish and desaturated images.
+							<br>
 							To counter this effect, it is proposed a second approach: the weighted categorical cross-entropy.  The reweighting of the objective function is done to account for the imbalance problem, as not all colors have the same frequency of appearance.<br>
+
+							<a class="image fit"><img src="images/loss_function.png" alt="" /></a>
 
 							The weights are defined according the prior smoothed empirical distribution obtained from the repository of the original paper. This custom loss function was implemented using Tensorflow and can be found in the loss.py script.  </p>
 						</section>
@@ -230,22 +234,18 @@
 							
 						</section>
 					</div>
-					<div class="6u">
-						<section>
-							<h2>Trainig with different architectures</h2>
-							<p> We decided to train our model with two different loss functions to compare the results. We used the Mean Squared Error and the Weighted Cross Entropy.
-							The results obtained can be found in the last section, we can easily see that the model with the Weighted Cross Entropy performs much better than the Mean Squared Error does. The predicted images with the Weighted Cross Entropy are more similar to the ground truth and more saturated and realistic </p>
-							<img src="images/mse_mini_batch.png" alt="" style="width:512px;"> 
-							
-							
-						</section>
-					</div>
 				</div>	
 				<div class="row">
 					<div class="6u">
 						<section>
 							<h2>Trainig with different architectures: UNet</h2>
 							<p> Image colorization is an image-to-image problem and can be understood as pixel-wise regression problem. In order to analyse our problem from another approach we tried to understand it as it: Our input greyscale image could be classified in Q possible classes, in other words, in the Q possible quantized colors values. A known and not difficult to implement architecture was the U-Net. So we implemented a 2D U-Net using Keras framework and tried to do overfit to one mini-batch. However, we discovered that the network we had designed had not capacity enough to deal with our problem as it was unable to overfit un mini-batch of size 15 for 20k iterations. Our 2D U-Net had 712.177 parameters against the 32.240.377 of the baseline architecture. A future experiment could be increasing the number of filters for each convolutional layer. The following figures are the training loss function and a predicted sample of the mini-batch. </p>
+						</section>
+					</div>
+					<div class="6u">
+						<section>
+							<h2>Trainig with different architectures: Conditional GAN</h2>
+							<p> explain. </p>
 						</section>
 					</div>
 				</div>	
@@ -258,7 +258,7 @@
 			</header>
 			<div class="container">
 				<div class="row">
-					<div class="4u">
+					<div class="6u">
 						<section>
 							<h2>Loss turns into 'nan'</h2>
 							<p> In the model we were trying to replicate, the output were the logits and the loss functions included the computation of the softmax layer before comparing. For this reason we did not realize that we were missing in our model a final softmax somewhere between the output of the model and the loss function. <br>
@@ -266,7 +266,7 @@
 							</p>
 						</section>
 					</div>
-					<div class="4u">
+					<div class="6u">
 						<section>
 							<h2>The model only produces red images</h2>
 							<a class="image fit"><img src="images/problem_red_outputs.png" alt="" /></a>
@@ -277,7 +277,7 @@
 					</div>
 				</div>	
 				<div class="row">
-					<div class="4u">
+					<div class="6u">
 						<section>
 							<h2>Imagenet is too large</h2>
 							<p> The main reason we experimented with two different datasets is simple. Once everything was set up, we saw that we had not enough time to train with Imagenet. Each epoch lasted 130h, so we decided to find another smaller dataset with a well defined input domain (not as imagenet which has a lot of different categories). <br>
@@ -286,7 +286,7 @@
 							</p>
 						</section>
 					</div>
-					<div class="4u">
+					<div class="6u">
 						<section>
 							<h2>Keras changes our loss</h2>
 							<p> When we reloaded our saved model, Keras changed our customized weighted crossentropy since name was the same. For these reason, one of our experiments consists in an hybrid-loss model which is trained with two different losses. We saw that the normal crossentropy is not a bad choice of loss function although, as we have seen, it does not take into account the prior color distribtuion.
