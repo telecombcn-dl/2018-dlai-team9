@@ -3,6 +3,7 @@ import os
 import png
 import sys
 import glob
+import socket
 import argparse
 import numpy as np
 from PIL import Image
@@ -10,6 +11,14 @@ from skimage.transform import resize
 from skimage.color import rgb2lab, lab2rgb
 from keras.models import load_model
 from utils import mappings, helpers
+from model.loss import categorical_crossentropy_weighted_function
+
+if socket.gethostname() == 'rimmek-XPS-15':
+    path = '/home/rimmek/MATT/DLAI/2018-dlai-team9/data/'
+else:
+    path = '/imatge/pvidal/2018-dlai-team9/data/'
+
+prior_probs = np.load(os.path.join(path, 'prior_probs.npy'))
 
 
 class Evaluation(object):
@@ -32,20 +41,24 @@ class Evaluation(object):
         if not os.path.exists(self.output_path):
             os.mkdir(self.output_path)
         if not self.autotest:
-            self.model = load_model(self.model_path)
+            self.model = load_model(
+                self.model_path,
+                custom_objects={
+                    'categorical_crossentropy_weighted': categorical_crossentropy_weighted_function(prior_probs)})
 
     @staticmethod
     def parse_arguments():
         parser = argparse.ArgumentParser(description='Evaluation inputs')
         parser.add_argument('-i', '--input_image', type=str,
                             help='Black and white image to be colorized',
-                            default='/home/rimmek/MATT/DLAI/2018-dlai-team9/data/test_images/dlai-flowers'
-                                    '/oxford8189/image_04793.jpg')
+                            default='/home/rimmek/MATT/DLAI/2018-dlai-team9/data/train_images/dlai-flowers/oxford8189/image_05857.jpg')
         parser.add_argument('-ip', '--input_path', type=str,
                             help='Black and white image to be colorized',
-                            default='/home/rimmek/MATT/DLAI/2018-dlai-team9/inputs/')
+                            default='')
+                            # default='/home/rimmek/MATT/DLAI/2018-dlai-team9/inputs/')
         parser.add_argument('-m', '--model_path', type=str, help='Trained model',
-                            default='/home/rimmek/MATT/DLAI/2018-dlai-team9/models/flowers_mse_lr_005.h5')
+                            default='/home/rimmek/MATT/DLAI/2018-dlai-team9/models/'
+                                    'flowers_weightedxentropy_lr_005_start_e8_e13_e5_e5.h5')
 
         return parser.parse_args()
 
