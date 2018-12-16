@@ -412,15 +412,14 @@ def get_gan(g, d, prior_probs):
     """
 
     def resize_labels(fake_labels):
-        fake_labels = tf.convert_to_tensor(np.array(fake_labels))
-        fake_labels = tf.reshape(fake_labels, (None, 64, 64, 313))
+        # fake_labels = tf.reshape(fake_labels, (None, 64, 64, 313))
         return tf.image.resize_images(fake_labels, [256, 256])
 
     image = Input((256, 256, 1))
     labels = Input((64, 64, 313))
 
     fake_labels = g(image)
-    upsampled_fake_labels = Lambda(resize_labels)([fake_labels])
+    upsampled_fake_labels = Lambda(resize_labels)(fake_labels)
 
     fake_pair = Concatenate(axis=3)([image, upsampled_fake_labels])
 
