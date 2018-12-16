@@ -1,5 +1,6 @@
 # This file trains the network.
 import time
+from os import path
 import numpy as np
 import data.data_generator as data
 from keras.callbacks import TensorBoard
@@ -17,6 +18,7 @@ class Trainer(object):
         self.N_IMAGES_TRAIN_VAL = None
         self.TRAIN_SIZE = 0.8
         self.LOSS_NAME = 'cross_entropy_weighted'
+        self.RESULTS_PATH = '/imatge/cbonin/dlai/gan'
         self.MODEL_NAME = 'flowers_weightedxentropy_lr_005_start_e8_e13_e5_e5_gan.h5'
         self.TRAIN_FROM_RESTORE_PATH = '/imatge/pvidal/2018-dlai-team9-joan/models/' \
                                        'flowers_weightedxentropy_lr_005_start_e8_e13_e5_weights.h5'
@@ -86,8 +88,8 @@ class Trainer(object):
                                                  batch_size=self.BATCH_SIZE)
         # self.steps_per_epoch = int(len(listdir_train) / self.BATCH_SIZE)
         # self.steps_per_val = int(len(listdir_val) / self.BATCH_SIZE)
-        self.steps_per_epoch = 3
-        self.steps_per_val = 3
+        self.steps_per_epoch = 90
+        self.steps_per_val = 20
 
     def _define_discriminator(self):
         print("Defining and compile discriminator architecture...")
@@ -202,10 +204,10 @@ class Trainer(object):
                 print("GAN VAL Round: {0} -> Loss {1}".format((n_round + 1), loss_val))
 
                 # save the weights of the colorization model
-                self.model.save_weights(self.MODEL_NAME[:-3] + '_weights_{}.h5'.format(n_round))
+                self.model.save_weights(path.join(self.RESULTS_PATH, self.MODEL_NAME[:-3] + '_weights_{}.h5'.format(n_round)))
 
             self.model.save(self.MODEL_NAME)
-            self.model.save_weights(self.MODEL_NAME[:-3] + '_weights.h5')
+            self.model.save_weights(path.join(self.RESULTS_PATH, self.MODEL_NAME[:-3] + + '_weights.h5'))
 
             # print the evolution of the loss
             print("DISCR loss {}".format(self.discr_loss_array))
@@ -214,8 +216,8 @@ class Trainer(object):
             print("GAN validation loss {}".format(self.val_gan_loss_array))
 
         except KeyboardInterrupt:
-            self.model.save(self.MODEL_NAME)
-            self.model.save_weights(self.MODEL_NAME[:-3] + '_weights.h5')
+            self.model.save(path.join(self.RESULTS_PATH, self.MODEL_NAME))
+            self.model.save_weights(path.join(self.RESULTS_PATH, self.MODEL_NAME[:-3] + + '_weights.h5'))
 
         print("Training finished")
 
