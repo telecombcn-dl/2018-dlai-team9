@@ -88,11 +88,13 @@
 				<div class="row">
 					<div class="6u">
 						<section>
-							<h2>Abstract</h2>
+							<h2>Our approach</h2>
 							<a class="image fit"><img src="images/colors.jpeg" alt="" /></a>
-							<p> The aim of this project is to generate realistic colorized images given a grayscale photograph as input , following and reproducing the ideas proposed in <a href="https://arxiv.org/pdf/1603.08511.pdf"> Colorful Image Colorization by Richard Zhang, Phillip Isola and Alexei A. Efros </a>.<br><br>
+							<p> We proposed ourselves a challenging problem: To program from scratch a neural network in order to colorize grayscale images following the ideas proposed in <a href="https://arxiv.org/pdf/1603.08511.pdf"> Colorful Image Colorization by Richard Zhang, Phillip Isola and Alexei A. Efros </a>.<br><br>
 
-							This paper formulates image colorization as a pixel level multimodal classification problem and Deep Learning techniques are used to solve it. In particular, the model consists in a Convolutional Neural Network (CNN) with multiple layers that we implemented from scratch with Keras and Tensorflow (The framework used in the paper is Caffe). Given the source luminance, taken from the grayscale image, the model predicts the corresponding a and b color channels of the image in the CIE Lab colorspace.
+							. This paper formulates image colorization as a pixel level multimodal classification problem and Deep Learning techniques are used to solve it. Firstly, we had to look for a dataset. As an initial approach we tried with Imagenet. Then, we built a Convolutional Neural Network with multiple layers using the sequential model of Keras and after that, we analysed the performance of two objective functions. <br> <br>
+							
+							Just as can be seen in the image, given a grayscale image, the model predicts automatically without the use of any image enhancement,  the corresponding a and b color channels of the image in the CIE Lab color space.
 							</p>
 							<a class="image fit"><img src="images/approach.png" alt="" /></a>
 						</section>
@@ -102,9 +104,9 @@
 							<h3>State of the art</h3>
 							<p>Similar systems have been develoed by other works, as <a href= "https://link.springer.com/chapter/10.1007/978-3-319-46493-0_35"> Larsson et al.</a> , <a href= " https://dl.acm.org/citation.cfm?id=2925974"> Iizuka et al.</a>   <a href= "https://www.cv-foundation.org/openaccess/content_iccv_2015/papers/Cheng_Deep_Colorization_ICCV_2015_paper.pdf" >Cheng Z et al.</a> ), however the results tend to be desaturated. 
 
-							The methods differ in their CNN architectures and loss functions. While our paper  uses a weighted classiffication loss to rebalance rare classes, Larsson et al. use an un-rebalanced classiffcation loss, and Iizuka et al. use a regression loss. About the CNN architectures. Larsson et al. use hypercolumns on a VGG network and Iizuka et al. use a two-stream architecture in which they use global and local features.
+							These methods differ in their CNN architectures and loss functions. While we use a weighted classification loss to rebalance rare classes, Larsson et al. use an un-rebalanced classification loss in a VGG network and Iizuka et al. use a regression loss in a two-stream architecture. 
 
-							Generative Adversarial Nets (GAN) have also been used to predict color (i. e.  <a href= "http://cs231n.stanford.edu/reports/2017/pdfs/302.pdf" > Qiwen Fu et al.</a> ).
+							Generative Adversarial Nets (GAN) have also been used to predict color and it seems to work well with drawings, if you are interested we encourage you to visit the work of  <a href= "http://cs231n.stanford.edu/reports/2017/pdfs/302.pdf" > Qiwen Fu et al.</a> ).
 							</p>
 
 
@@ -112,9 +114,7 @@
 						<section>
 							<h3>Dataset</h3>
 							<a class="image fit"><img src="images/BW_bird.png" alt="" /></a>
-							<p> Two  datasets were used to train our model; the well known <a href="http://www.image-net.org"> ImageNet </a> and a flowers image dataset composed of several <a href= "https://www.kaggle.com/alxmamaev/flowers-recognition"> datasets from Kaggle</a> containing 14K images. Predicting color has the nice property that training data is practically free. There is no need for humans to label data because any color photo can be used as a training example, simply by taking the image's L channel (luminance) as input and its ab channels (color) as the supervisory signal. Therefore, we can say our algorithm uses a self-supervised approach to train by previously converting the source images to grayscale.<br><br>
-
-							We decided to use the flowers dataset because the model was training very slow with ImageNet, as it contains a large amount of images, and we were running out of time. </p>
+							<p> We used two datasets to train our model; first we trained on a subset (around 500k images) of the well known  <a href="http://www.image-net.org"> ImageNet </a>, due to time and hardware limitations, we ended up switching to a smaller dataset: a flowers image dataset composed of the combination of several datasets from Kaggle and the Oxford University, which contained 14K images. Predicting color has the nice property that training data is largely available. There is no need to label data because any color photo can be used as a training example, simply by taking the luminance as input and its ab channels (color) as the supervisory signal. Therefore, we can say our algorithm uses a self-supervised approach to train by previously converting the source images to grayscale. </p>
 						</section>
 					</div>
 				</div>
@@ -131,13 +131,20 @@
 						<section>
 							<h2>CIE Lab Color space</h2>
 							<a class="image fit"><img src="images/Quantized_ab_color_space.png" alt=""/></a>
-							<p> We work on the CIE Lab Color space. It expresses color as three numerical values, L* for the lightness and a* and b* for the green–red and blue–yellow color components. CIELAB was designed to be perceptually uniform with respect to human color vision, meaning that the same amount of numerical change in these values corresponds to about the same amount of visually perceived change.</p>
+							<p> We work on the CIE Lab Color space. It expresses each color with three numerical values, L* for the lightness and a* and b* for the green–red and blue–yellow color components. CIELab was designed to be perceptually uniform with respect to human color vision, meaning that the same amount of numerical change in these values corresponds to about the same amount of visually perceived change.</p>
+
+							<h2>Preprocessing</h2>
+							<p>In the preprocessing step we resized all the images to 256x256 in order to have the same input shape. Separated luminosity and chromaticity. The luminosity is input to the network. The chromaticity is projected onto the 313 discretized values creating a soft 1-hot vector for the 10-nearest neighbors weighted with a Gaussian kernel according to their distance to the truth color, and is used as label.</p>
 						</section>
 					</div>
 					<div class="5u">
 						<section>
 							<h2>Class rebalancing</h2>
-							<p> Explain class rebalancing and class Probabilities to Point estimates</p>
+							<p> As explained in the paper our work is based on, not all colors have the same probability to appear in an image. In particular, grayish colors are the most probable. Therefore a neural net predicting only grayish colors has a higher chance of making a correct prediction. In order to avoid this behavior, a weighted categorical cross entropy loss is defined (explained later) which penalizes grayish predictions in order to encourage the net to make more vivid and saturated predictions. The weights used in this custom loss depend on the probability of each color to appear. Since defining a continuous probability function for each color would be hardly feasible, their approach consists of discretizing the color space in 313 different ab values. For each of those 313 values, its probability is computed using the ImageNet database. The discretization of 313 values can be found in the pts_in_hull.npy file and their probability in prior_probs.npy, both under the data/ directory. We copied these arrays from the repository of the original paper since computing them required processing the whole ImageNet dataset and was hardly teaching us much about deep learning.</p>
+
+				
+
+
 						</section>
 					</div>
 				</div>
@@ -152,12 +159,12 @@
 				<div class="row">
 					<div class="7u">
 						<section>
-							<h2>Approach</h2>
+							<h2>The model</h2>
 							<a class="image fit"><img src="images/architecture.png" alt="" /></a>
 							<p> The architecture proposed in the <a href="https://arxiv.org/pdf/1603.08511.pdf"> Colorful Image Colorization paper </a> consists in a CNN composed by 8 layers.
 							Each layer refers to a block of 2 or 3 repeated convolution layers with a 3x3 filter and a ReLU activation function, followed by a Batch Normalization layer. To preserve the resolution within the block, a padding filter is used. <br> <br>
 
-							At conv5 and conv6 a dilated convolution is applied to keep the output resolutions high and avoid the need of upsampling. A dilated convolution is a convolution with gaps (filled in with '0') in the filter. It is effective for a broader view of the input to capture more contextual information and it enables a faster run-time with less parameters. <br> <br>
+							At conv5 and conv6 a dilated convolution is applied to keep the output resolutions high and avoid the need of upsampling. A dilated convolution is a convolution with gaps (filled in with '0') in the filter. It is effective for a broader view of the input to capture more contextual information and it enables a faster run-time with less parameters.  <br> <br>
 
 							The following table lists the layers used in the architecture during training time.
 
@@ -178,11 +185,21 @@
 					</div>
 					<div class="5u">
 						<section>
-							<h2>Loss Function: Weighted cross-entropy</h2>
+							<h2>LOSS FUNCTION: MSE AND WEIGHTED CROSS-ENTROP</h2>
 							<a class="image fit"><img src="images/loss_function.png" alt="" /></a>
-							<p>The problem is treated as a multinomial classification. The ab output is quantified in Q=313 values. For a given input X of dims HxWx1, our architecture learns a mapping Zpred = G(X) to a probability distribution of the Q possible colors values. Therefore, Zpred has dimensions HxWxQ. <br>
-							In order to compare Z predicted against the ground truth values of the image Y, we define a soft-encoding Z = inverse(H)(Y) that transforms the ground truth color to a 1-hot vector Z with the nearest 5 quantized bins ab using a gaussian kernel.<br>
-							To account for the imbalance problem, a reweighting of the loss function based in the pixel's rarity is defined. Each pixels is weighted by a factor w of dims Qx1 based on its closest ab bin. The following formula shows how the reweighting matrix is obtained. </p>
+							<p>We have tested the two objective functions proposed in <a href="https://arxiv.org/pdf/1603.08511.pdf"> Colorful Image Colorization by Richard Zhang, Phillip Isola and Alexei A. Efros </a>.<br><br> MSE and a weighted multinomial cross-entropy. <br><br>
+
+							The input of our baseline CNN is the luminance channel X of an image with the size (H,W,1) and the output Z_pred is the predicted probability distribution over a set of possible colors of shape (H,W,313), as it is explained in the class rebalancing section.<br>
+							In order to compare Z_pred predicted against the ground truth, we need to define a Z which  is the result of a soft-encoding from the truth colors to the space of quantized values. This Z is a soft 1-hot vector for the 10-nearest neighbors weighted with a Gaussinan kernel according to their distance to the truth color.<br>
+							The first proposed objective function is the Mean-Squared Error loss between the ground truth Z and the predicted values Z_pred. This loss function was already implemented by Keras.<br><br>
+							According to <a href="https://arxiv.org/pdf/1603.08511.pdf"> Colorful Image Colorization by Richard Zhang, Phillip Isola and Alexei A. Efros </a>.<br><br>, the MSE is not robust to inherent ambiguity and multimodal nature of the colorization problem. The MSE results in giving the mean color of the set to all images, in other words, giving grayish and desaturated images.
+							To counter this effect, it is proposed a second approach: the weighted categorical cross-entropy.  The reweighting of the objective function is done to account for the imbalance problem, as not all colors have the same frequency of appearance.
+							<br><br>
+							The weights are defined according the prior smoothed empirical distribution obtained from the repository of the original paper.
+							<br><br>
+							(formulas)
+							<br><br>
+							This custom loss function was implemented using Tensorflow and can be found in the loss.py script.  </p>
 						</section>
 					</div>
 				</div>
@@ -196,26 +213,38 @@
 			</header>
 			<div class="container">
 				<div class="row">
-					<div class="6u">
+					<div class="5u">
 						<section>
 							<h2>Overfitting a mini-batch</h2>
 							</a>
-							<p> The first resuts we obtained from our model evidenced that it was not able to predict correctly any color of the input image and the predictions seemed to be random.
+							<p> Once set up correctly, we got our first results. After 30 minutes we got an intuition that we were doing well!
+
 								<br><br>
 							<a class="image fit"><img src="images/first_results.png" alt="" /></a>
-							Thus, we decided to overfit the model by using a mini-batch of 25 images to ensure that the model was working properly. This technique is a way of doing a quick sanity test because if the model cannot overfit a small amount of data, there is a simple bug somewhere. Once we achieved to overfit the model, we trained the model with more inputs.
+							We decided to overfit the model for some hours by using a mini-batch of 25 images to ensure that the model was working properly. This technique is a way of doing a quick sanity check because if the model cannot overfit a small amount of data, there is a simple bug somewhere. 
 							<br><br>
 							<a class="image fit"><img src="images/mini_batch_overfitted.png" alt=""/></a>
+							Once we achieved to overfit the model, we started to train the model with the whole dataset. 
+
 							</p>
 						</section>
 					</div>
-					<div class="6u">
+					
+					<div class="7u">
+						<section>
+							<h2>TRAINING WITH DIFFERENT ARCHITECTURES: UNET</h2>
+							<p>Image colorization is an image-to-image problem and can be understood as pixel-wise regression problem. In order to analyse our problem from another approach we tried to understand it as it: Our input grayscale image could be classified in Q possible classes, in other words, in the Q possible quantized colors values. A known and not difficult to implement architecture was the U-Net. So we implemented a 2D U-Net using Keras framework and tried to do overfit to one mini-batch. However, we discovered that the network we had designed had not capacity enough to deal with our problem as it was unable to overfit un mini-batch of size 15 for 20k iterations. Our 2D U-Net had 712.177 parameters against the 32.240.377 of the baseline architecture. A future experiment should be increasing the number of filters for each convolutional layer. The following figures are the training loss function and a predicted sample of the mini-batch.
+
+ 							</p>
+						</section>
+					</div>
+					<div class="12u">
 						<section>
 							<h2>Trainig with different loss functions</h2>
-							<p> We decided to train our model with two different loss functions: The Mean Squared Error and the Weighted Cross Entropy. We obtained two different models to test and we compared the results. We prove that the Weighted Cross Entropy is the loss that provides the more bright and realistic results. </p>
-							<img src="images/mse_mini_batch.png" alt="" style="width:512px;"> 
-							
-							
+							<p>We decided to train our model with two different loss functions to compare the results. We used the Mean Squared Error and the Weighted Cross Entropy.<br>
+							The results obtained can be found in the last section, we can easily see that the model with the Weighted Cross Entropy performs much better than the Mean Squared Error does. The predicted images with the Weighted Cross Entropy are more similar to the ground truth and more saturated and realistic.
+ 							</p>
+							<img src="images/mse_mini_batch.png" alt="" style="width:512px;"> 			
 						</section>
 					</div>
 				</div>	
@@ -228,28 +257,36 @@
 			</header>
 			<div class="container">
 				<div class="row">
-					<div class="4u">
+					<div class="6u">
 						<section>
 							<h2>Loss turns into 'nan'</h2>
-							<p> Explain</p>
+							<p> In the model we were trying to replicate, the output were the logits and the loss function included the computation of the softmax per pixel before comparing. For this reason we did not realize that we were missing in our model a final softmax layer between the output of the model and the loss function. <br> <br>
+							Since there was no activation. When training with our self-programmed loss function, we were computing logarithms of negative numbers thus resulting in NaNs. Somehow, the default cross entropy loss, was robust to that kind of input and did not fail as our loss, which lead us to think that what was wrong was the loss and not the output of the net.
+							</p>
+						</section>
+						<section>
+							<h2>IMAGENET IS TO LARGE</h2>
+							<p> The main reason we experimented with two different datasets is simple. Once everything was set up, we saw that we had not enough time to train with Imagenet. Each epoch lasted 130h, so we decided to find another smaller dataset with a well defined input domain (not as imagenet which has a lot of different categories). <br>
+							We chose a mix of flower datasets which would simplify the task and would not require so many training samples. With this approach we reduced the training time and quickly improved the results!
+ </p>
+						</section>
+						<section>
+							<h2>KERAS CHANGES OUR LOSS</h2>
+							<p> When we reloaded our saved model, Keras changed our customized weighted crossentropy since we had named it with the same name as the default crossentropy. For this reason, in one of our experiments some of the epochs where trained with one loss and some epochs with the other. We fixed this and kept training. In the end, the results between a model trained entirely with the weighted crossentropy loss and the model which has some of its epochs (the intermediate ones) trained with the vanila crossentropy were similar. This makes sense since the losses are not that different, and the model trained partly by another loss can be thought as using pre-trained weights at the start of the training using the weights of a similar problem. </p>
 						</section>
 					</div>
-					<div class="4u">
+					<div class="6u">
 						<section>
 							<h2>The model only produces red images</h2>
 							<a class="image fit"><img src="images/problem_red_outputs.png" alt="" /></a>
-							<p> Explain </p>
-						</section>
-					</div>
-					<div class="4u">
-						<section>
-							<h2>First results</h2>
-							<a class="image fit"><img src="images/first_results.png" alt="" /></a>
-							<p> Explain </p>
+							<p> Related to the previous problem, still not knowing that what we needed was a softmax layer, we tried to constrain the output of the model with Relus and sigmoids. However, the net was allowed to predict 1 in all the 64*64*313 output values. The network was doing this because, since we were using a cross entropy loss which performs the logarithm of the output values and since the logarithm of one is zero, outputting all ones was minimizing the loss. Then, in the prediction phase, the color is given by the output times the corresponding 313 colors. Since all the outputs where ones for each pixel, the expectation yielded the mean value, which for the CIE Lab color space seem to be this pink-ish slash red-ish color.
+We finally found out where the problem was and once we fixed it, the network started working properly.
+ </p>
 						</section>
 					</div>
 				</div>	
 			</div>
+
 		</section>
 		
 		<section id="Results" class="wrapper style1">
@@ -267,7 +304,27 @@
 					<div class="6u">
 						<section>
 							<h2>Future work</h2>
-							<p>....</p>
+							<p>
+							As we have mentioned before, the prior probabilities of each color that we are using in this project are the ones that they used in the original paper. They were computed taking into account the frequency of each of the 313 discretized color values in the Imagenet dataset. Something that could therefore maybe improve the performance of our model on the flowers dataset would be to compute those probabilities for that dataset in particular. 
+							</p>
+						</section>
+					</div>
+					<div class="6u">
+						<section>
+							<h2>References</h2>
+							<p>Flower images dataset:<br>
+
+							• 210 images: <a href="https://www.kaggle.com/olgabelitskaya/flower-color-images/home"> https://www.kaggle.com/olgabelitskaya/flower-color-images/home</a> <br>
+
+							• 4242 images: <a href="https://www.kaggle.com/alxmamaev/flowers-recognition/home">https://www.kaggle.com/alxmamaev/flowers-recognition/home</a><br>
+
+							• 1360 images: <a href="http://www.robots.ox.ac.uk/~vgg/data/flowers/17/"> http://www.robots.ox.ac.uk</a> <br>
+
+							• 8189 images: <a href="http://www.robots.ox.ac.uk/~vgg/data/flowers/102/"> http://www.robots.ox.ac.uk</a><br>
+
+						
+							<a href="https://github.com/telecombcn-dl/2018-dlai-team9"> Our GitHub repo</a> <br>
+							</p>
 						</section>
 					</div>
 
