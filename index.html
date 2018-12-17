@@ -90,14 +90,15 @@
 					<div class="6u">
 						<section>
 							<h2>Our approach</h2>
-							<a class="image fit"><img src="images/colors.jpeg" alt="" /></a>
+							<a class="image fit"><img src="images/our_approach.png" alt="" /></a>
 							<p> We proposed ourselves a challenging problem: To program from scratch a neural network in order to colorize grayscale images following the ideas proposed in <a href="https://arxiv.org/pdf/1603.08511.pdf"> Colorful Image Colorization by Richard Zhang, Phillip Isola and Alexei A. Efros </a>.<br><br>
 
 							. This paper formulates image colorization as a pixel level multimodal classification problem and Deep Learning techniques are used to solve it. Firstly, we had to look for a dataset. As an initial approach we tried with Imagenet. Then, we built a Convolutional Neural Network with multiple layers using the sequential model of Keras and after that, we analysed the performance of two objective functions. <br> <br>
 							
 							Just as can be seen in the image, given a grayscale image, the model predicts automatically without the use of any image enhancement,  the corresponding a and b color channels of the image in the CIE Lab color space.
-							</p>
 							<a class="image fit"><img src="images/approach.png" alt="" /></a>
+							Image taken from <a href="https://arxiv.org/pdf/1603.08511.pdf"> Colorful Image Colorization </a>
+							</p>
 						</section>
 					</div>
 					<div class="6u">
@@ -172,7 +173,10 @@
 						<section>
 							<h2>The model</h2>
 							<a class="image fit"><img src="images/architecture.png" alt="" /></a>
-							<p> The architecture proposed in the <a href="https://arxiv.org/pdf/1603.08511.pdf"> Colorful Image Colorization paper </a> consists in a CNN composed by 8 layers.
+							<p> Image taken from <a href="https://arxiv.org/pdf/1603.08511.pdf"> Colorful Image Colorization </a>
+
+								<br><br>
+								The architecture proposed in the <a href="https://arxiv.org/pdf/1603.08511.pdf"> Colorful Image Colorization paper </a> consists in a CNN composed by 8 layers.
 							Each layer refers to a block of 2 or 3 repeated convolution layers with a 3x3 filter and a ReLU activation function, followed by a Batch Normalization layer. To preserve the resolution within the block, a padding filter is used. <br> <br>
 
 							At conv5 and conv6 a dilated convolution is applied to keep the output resolutions high and avoid the need of upsampling. A dilated convolution is a convolution with gaps (filled in with '0') in the filter. It is effective for a broader view of the input to capture more contextual information and it enables a faster run-time with less parameters.  <br> <br>
@@ -197,12 +201,12 @@
 					<div class="6u">
 						<section>
 							<h2>LOSS FUNCTION: MSE AND WEIGHTED CROSS-ENTROPY</h2>
-							<p>We have tested the two objective functions proposed in <a href="https://arxiv.org/pdf/1603.08511.pdf"> Colorful Image Colorization by Richard Zhang, Phillip Isola and Alexei A. Efros </a>.<br><br> MSE and a weighted multinomial cross-entropy. <br><br>
+							<p>We have tested the two objective functions proposed in <a href="https://arxiv.org/pdf/1603.08511.pdf"> Colorful Image Colorization  </a>. MSE and a weighted multinomial cross-entropy. <br><br>
 
 							The input of our baseline CNN is the luminance channel X of an image with the size (H,W,1) and the output Z_pred is the predicted probability distribution over a set of possible colors of shape (H,W,313), as it is explained in the class rebalancing section.<br>
 							In order to compare Z_pred predicted against the ground truth, we need to define a Z which  is the result of a soft-encoding from the truth colors to the space of quantized values. This Z is a soft 1-hot vector for the 10-nearest neighbors weighted with a Gaussinan kernel according to their distance to the truth color.<br>
 							The first proposed objective function is the Mean-Squared Error loss between the ground truth Z and the predicted values Z_pred. This loss function was already implemented by Keras.<br><br>
-							According to <a href="https://arxiv.org/pdf/1603.08511.pdf"> Colorful Image Colorization by Richard Zhang, Phillip Isola and Alexei A. Efros </a>.<br><br>, the MSE is not robust to inherent ambiguity and multimodal nature of the colorization problem. The MSE results in giving the mean color of the set to all images, in other words, giving grayish and desaturated images.
+							According to <a href="https://arxiv.org/pdf/1603.08511.pdf"> Colorful Image Colorization paper </a>, the MSE is not robust to inherent ambiguity and multimodal nature of the colorization problem. The MSE results in giving the mean color of the set to all images, in other words, giving grayish and desaturated images.
 							To counter this effect, it is proposed a second approach: the weighted categorical cross-entropy.  The reweighting of the objective function is done to account for the imbalance problem, as not all colors have the same frequency of appearance.
 							The weights are defined according the prior smoothed empirical distribution obtained from the repository of the original paper.
 							<br><br>
@@ -247,7 +251,7 @@
  							</p>
 						</section>
 					</div>
-					<div class="12u">
+					<div class="5u">
 						<section>
 							<h2>Training with different loss functions</h2>
 							<p>We decided to train our model with two different loss functions to compare the results. We used the Mean Squared Error and the Weighted Cross Entropy.<br>
@@ -256,7 +260,7 @@
 							<img src="images/losses.png" alt="" style="width:512px;"> 			
 						</section>
 					</div>
-					<div class="12u">
+					<div class="7u">
 						<section>
 							<h2>Training with a conditional GAN</h2>
 							<p>An iteresting idea to improve our results in automatic colorization is to address it using a conditional GAN as it proposed in <a href="https://arxiv.org/abs/1803.05400"> Image Colorization using Generative Adversarial Networks by Kamyar Nazeri, Eric Ng and Mehran Ebrahimi </a> . It is a variant of the DBGAN in which the input of the generator is our greyscale image instead of noise. We have implemented a conditional GAN from scratch using Keras and Tensorflow. <br> <br>
@@ -313,7 +317,44 @@ We finally found out where the problem was and once we fixed it, the network sta
 				<h2>Results</h2>
 			</header>
 			<div class="container">
-				
+				<p> Results obtained using MSE loss: </p>
+				<div class="row">
+					<div class="3u">
+						<section>
+							<a class="image fit"><img src="images/images_mse/image.png" alt="" /></a>
+							<a class="image fit"><img src="images/images_mse/image (1).png" alt="" /></a>
+							<a class="image fit"><img src="images/images_mse/image (2).png" alt="" /></a>
+
+						</section>
+					</div>
+					<div class="3u">
+						<section>
+							<a class="image fit"><img src="images/images_mse/image (10).png" alt="" /></a>
+							<a class="image fit"><img src="images/images_mse/image (4).png" alt="" /></a>
+							<a class="image fit"><img src="images/images_mse/image (5).png" alt="" /></a>
+
+
+						</section>
+					</div>
+					<div class="3u">
+						<section>
+
+							<a class="image fit"><img src="images/images_mse/image (6).png" alt="" /></a>
+							<a class="image fit"><img src="images/images_mse/image (7).png" alt="" /></a>
+							<a class="image fit"><img src="images/images_mse/image (8).png" alt="" /></a>
+
+						</section>
+					</div>
+					<div class="3u">
+						<section>
+							<a class="image fit"><img src="images/images_mse/image (9).png" alt="" /></a>
+							<a class="image fit"><img src="images/images_mse/image (3).png" alt="" /></a>
+							<a class="image fit"><img src="images/images_mse/image (11).png" alt="" /></a>
+
+
+						</section>
+					</div>
+				</div>					
 			</div>
 		</section>
 		
@@ -333,9 +374,9 @@ We finally found out where the problem was and once we fixed it, the network sta
 							<h2>References</h2>
 							<p>Flower images dataset:<br>
 
-							• 210 images: <a href="https://www.kaggle.com/olgabelitskaya/flower-color-images/home"> https://www.kaggle.com/olgabelitskaya/flower-color-images/home</a> <br>
+							• 210 images: <a href="https://www.kaggle.com/olgabelitskaya/flower-color-images/home"> dataset from Kaggle</a> <br>
 
-							• 4242 images: <a href="https://www.kaggle.com/alxmamaev/flowers-recognition/home">https://www.kaggle.com/alxmamaev/flowers-recognition/home</a><br>
+							• 4242 images: <a href="https://www.kaggle.com/alxmamaev/flowers-recognition/home">dataset from Kaggle</a><br>
 
 							• 1360 images: <a href="http://www.robots.ox.ac.uk/~vgg/data/flowers/17/"> http://www.robots.ox.ac.uk</a> <br>
 
