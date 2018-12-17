@@ -184,19 +184,7 @@
 
 							At conv5 and conv6 a dilated convolution is applied to keep the output resolutions high and avoid the need of upsampling. A dilated convolution is a convolution with gaps (filled in with '0') in the filter. It is effective for a broader view of the input to capture more contextual information and it enables a faster run-time with less parameters.  <br> <br>
 
-							The following table lists the layers used in the architecture during training time.
-
-							<a class="image fit"><img src="images/table_cnn.png" alt="" /></a>
-
-							<b>X</b>: Spatial resolution of output <br> 
-							<b>C</b>: Number of channels of output <br>
-							<b>S</b>: Computation stride, values greater than 1 indicate downsampling following convolution, values less than 1 indicate upsampling preceding convolution <br>
-							<b>D</b>: Kernel dilation <br>
-							<b>Sa</b>: Accumulated stride across all preceding layers <br>
-							<b>De</b>: Effective dilation of the layer with respect to the input (layer dilation times accumulated stride)<br>
-							<b>BN</b>: Whether BatchNorm layer was used after layer
-							<b>L</b>: Whether a 1x1 conv and cross-entropy loss layer was imposed.<br> <br>
-
+							
 							The model does not have any pool layer, all changes in size between conv blocks are achieved through spatial downsampling (by increasing stride) or upsampling.
 							</p>
 						</section>
