@@ -196,7 +196,6 @@
 					<div class="6u">
 						<section>
 							<h2>LOSS FUNCTION: MSE AND WEIGHTED CROSS-ENTROP</h2>
-							<a class="image fit"><img src="images/loss_function.png" alt="" /></a>
 							<p>We have tested the two objective functions proposed in <a href="https://arxiv.org/pdf/1603.08511.pdf"> Colorful Image Colorization by Richard Zhang, Phillip Isola and Alexei A. Efros </a>.<br><br> MSE and a weighted multinomial cross-entropy. <br><br>
 
 							The input of our baseline CNN is the luminance channel X of an image with the size (H,W,1) and the output Z_pred is the predicted probability distribution over a set of possible colors of shape (H,W,313), as it is explained in the class rebalancing section.<br>
@@ -205,6 +204,8 @@
 							According to <a href="https://arxiv.org/pdf/1603.08511.pdf"> Colorful Image Colorization by Richard Zhang, Phillip Isola and Alexei A. Efros </a>.<br><br>, the MSE is not robust to inherent ambiguity and multimodal nature of the colorization problem. The MSE results in giving the mean color of the set to all images, in other words, giving grayish and desaturated images.
 							To counter this effect, it is proposed a second approach: the weighted categorical cross-entropy.  The reweighting of the objective function is done to account for the imbalance problem, as not all colors have the same frequency of appearance.
 							<br><br>
+							<a class="image fit"><img src="images/loss_function.png" alt="" /></a>
+
 							The weights are defined according the prior smoothed empirical distribution obtained from the repository of the original paper.
 							<br><br>
 							(formulas)
