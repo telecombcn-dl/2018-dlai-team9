@@ -140,7 +140,17 @@
 					<div class="5u">
 						<section>
 							<h2>Class rebalancing</h2>
-							<p> As explained in the paper our work is based on, not all colors have the same probability to appear in an image. In particular, grayish colors are the most probable. Therefore a neural net predicting only grayish colors has a higher chance of making a correct prediction. In order to avoid this behavior, a weighted categorical cross entropy loss is defined (explained later) which penalizes grayish predictions in order to encourage the net to make more vivid and saturated predictions. The weights used in this custom loss depend on the probability of each color to appear. Since defining a continuous probability function for each color would be hardly feasible, their approach consists of discretizing the color space in 313 different ab values. For each of those 313 values, its probability is computed using the ImageNet database. The discretization of 313 values can be found in the pts_in_hull.npy file and their probability in prior_probs.npy, both under the data/ directory. We copied these arrays from the repository of the original paper since computing them required processing the whole ImageNet dataset and was hardly teaching us much about deep learning.</p>
+							<p> As explained in the paper our work is based on, not all colors have the same probability to appear in an image. 
+								In particular, grayish colors are the most probable. Therefore a neural net predicting only grayish colors has a 
+								higher chance of making a correct prediction. In order to avoid this behavior, a weighted categorical cross 
+								entropy loss is defined (explained later) which penalizes grayish predictions in order to encourage the net to make 
+								more vivid and saturated predictions.<br><br>
+								The weights used in this custom loss depend on the probability of each color to appear. Since defining a continuous 
+								probability function for each color would be hardly feasible, their approach consists of discretizing the color space
+								in 313 different ab values. For each of those 313 values, its probability is computed using the ImageNet database. 
+								The discretization of 313 values can be found in the pts_in_hull.npy file and their probability in prior_probs.npy, 
+								both under the data/ directory. We copied these arrays from the repository of the original paper since computing 
+								them required processing the whole ImageNet dataset and was hardly teaching us much about deep learning.</p>
 
 				
 
