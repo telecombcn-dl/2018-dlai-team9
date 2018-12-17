@@ -242,7 +242,8 @@
 						<section>
 							<h2>TRAINING WITH DIFFERENT ARCHITECTURES: UNET</h2>
 							<p>Image colorization is an image-to-image problem and can be understood as pixel-wise regression problem. In order to analyse our problem from another approach we tried to understand it as it: Our input grayscale image could be classified in Q possible classes, in other words, in the Q possible quantized colors values. A known and not difficult to implement architecture was the U-Net. So we implemented a 2D U-Net using Keras framework and tried to do overfit to one mini-batch. However, we discovered that the network we had designed had not capacity enough to deal with our problem as it was unable to overfit un mini-batch of size 15 for 20k iterations. Our 2D U-Net had 712.177 parameters against the 32.240.377 of the baseline architecture. A future experiment should be increasing the number of filters for each convolutional layer. The following figures are the training loss function and a predicted sample of the mini-batch.
-
+							<a class="image fit"><img src="images/loss_unet.png" alt=""/></a>
+							<a class="image fit"><img src="images/results_unet.png" alt=""/></a>
  							</p>
 						</section>
 					</div>
