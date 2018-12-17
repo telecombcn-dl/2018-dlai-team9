@@ -90,12 +90,12 @@
 					<div class="6u">
 						<section>
 							<h2>Our approach</h2>
-							<a class="image fit"><img src="images/our_approach.png" alt="" /></a>
+							<a class="image fit"><img src="images/our_approach2.png" alt="" /></a>
 							<p> We proposed ourselves a challenging problem: To program from scratch a neural network in order to colorize grayscale images following the ideas proposed in <a href="https://arxiv.org/pdf/1603.08511.pdf"> Colorful Image Colorization by Richard Zhang, Phillip Isola and Alexei A. Efros </a>.<br><br>
 
 							. This paper formulates image colorization as a pixel level multimodal classification problem and Deep Learning techniques are used to solve it. Firstly, we had to look for a dataset. As an initial approach we tried with Imagenet. Then, we built a Convolutional Neural Network with multiple layers using the sequential model of Keras and after that, we analysed the performance of two objective functions. <br> <br>
 							
-							Just as can be seen in the image, given a grayscale image, the model predicts automatically without the use of any image enhancement,  the corresponding a and b color channels of the image in the CIE Lab color space.
+							Just as can be seen in the image, given a grayscale image, the model predicts automatically without the use of any image enhancement,  the corresponding a and b color channels of the image in the CIE Lab color space.<br>
 							<a class="image fit"><img src="images/approach.png" alt="" /></a>
 							Image taken from <a href="https://arxiv.org/pdf/1603.08511.pdf"> Colorful Image Colorization </a>
 							</p>
@@ -108,7 +108,7 @@
 
 							These methods differ in their CNN architectures and loss functions. While we use a weighted classification loss to rebalance rare classes, Larsson et al. use an un-rebalanced classification loss in a VGG network and Iizuka et al. use a regression loss in a two-stream architecture. 
 
-							Generative Adversarial Nets (GAN) have also been used to predict color and it seems to work well with drawings, if you are interested we encourage you to visit the work of  <a href= "http://cs231n.stanford.edu/reports/2017/pdfs/302.pdf" > Qiwen Fu et al.</a> ).
+							Generative Adversarial Nets (GAN) have also been used to predict color and it seems to work well with drawings, if you are interested we encourage you to visit the work of  <a href= "http://cs231n.stanford.edu/reports/2017/pdfs/302.pdf" > Qiwen Fu et al.</a>
 							</p>
 
 
@@ -133,7 +133,10 @@
 						<section>
 							<h2>CIE Lab Color space</h2>
 							<a class="image fit"><img src="images/Quantized_ab_color_space.png" alt=""/></a>
-							<p> We work on the CIE Lab Color space. It expresses each color with three numerical values, L* for the lightness and a* and b* for the green–red and blue–yellow color components. CIELab was designed to be perceptually uniform with respect to human color vision, meaning that the same amount of numerical change in these values corresponds to about the same amount of visually perceived change.</p>
+							<p> Image taken from <a href="https://arxiv.org/pdf/1603.08511.pdf"> Colorful Image Colorization </a> where (a) is the quantized ab color space with a grid size of 10. A total of 313 ab pairs are in gamut. (b) Empirical probability distribution of ab values, shown in log scale. (c) Empirical probability distribution of ab values, conditioned on L, shown in log scale <br><br>
+
+
+							We work on the CIE Lab Color space. It expresses each color with three numerical values, L* for the lightness and a* and b* for the green–red and blue–yellow color components. CIELab was designed to be perceptually uniform with respect to human color vision, meaning that the same amount of numerical change in these values corresponds to about the same amount of visually perceived change.</p>
 
 							<h2>Preprocessing</h2>
 							<p>In the preprocessing step we resized all the images to 256x256 in order to have the same input shape. Separated luminosity and chromaticity. The luminosity is input to the network. The chromaticity is projected onto the 313 discretized values creating a soft 1-hot vector for the 10-nearest neighbors weighted with a Gaussian kernel according to their distance to the truth color, and is used as label.</p>
@@ -247,6 +250,7 @@
 							<h2>TRAINING WITH DIFFERENT ARCHITECTURES: UNET</h2>
 							<p>Image colorization is an image-to-image problem and can be understood as pixel-wise regression problem. In order to analyse our problem from another approach we tried to understand it as it: Our input grayscale image could be classified in Q possible classes, in other words, in the Q possible quantized colors values. A known and not difficult to implement architecture was the U-Net. So we implemented a 2D U-Net using Keras framework and tried to do overfit to one mini-batch. However, we discovered that the network we had designed had not capacity enough to deal with our problem as it was unable to overfit un mini-batch of size 15 for 20k iterations. Our 2D U-Net had 712.177 parameters against the 32.240.377 of the baseline architecture. A future experiment should be increasing the number of filters for each convolutional layer. The following figures are the training loss function and a predicted sample of the mini-batch.
 							<a class="image fit"><img src="images/loss_unet.png" alt=""/></a>
+							
 							<a class="image fit"><img src="images/results_unet.png" alt=""/></a>
  							</p>
 						</section>
@@ -317,14 +321,13 @@ We finally found out where the problem was and once we fixed it, the network sta
 				<h2>Results</h2>
 			</header>
 			<div class="container">
-				<p> Results obtained using MSE loss: </p>
+				<h3> Results obtained using MSE loss: </h3>
 				<div class="row">
 					<div class="3u">
 						<section>
 							<a class="image fit"><img src="images/images_mse/image.png" alt="" /></a>
 							<a class="image fit"><img src="images/images_mse/image (1).png" alt="" /></a>
 							<a class="image fit"><img src="images/images_mse/image (2).png" alt="" /></a>
-
 						</section>
 					</div>
 					<div class="3u">
@@ -332,17 +335,13 @@ We finally found out where the problem was and once we fixed it, the network sta
 							<a class="image fit"><img src="images/images_mse/image (10).png" alt="" /></a>
 							<a class="image fit"><img src="images/images_mse/image (4).png" alt="" /></a>
 							<a class="image fit"><img src="images/images_mse/image (5).png" alt="" /></a>
-
-
 						</section>
 					</div>
 					<div class="3u">
 						<section>
-
 							<a class="image fit"><img src="images/images_mse/image (6).png" alt="" /></a>
 							<a class="image fit"><img src="images/images_mse/image (7).png" alt="" /></a>
 							<a class="image fit"><img src="images/images_mse/image (8).png" alt="" /></a>
-
 						</section>
 					</div>
 					<div class="3u">
@@ -350,8 +349,41 @@ We finally found out where the problem was and once we fixed it, the network sta
 							<a class="image fit"><img src="images/images_mse/image (9).png" alt="" /></a>
 							<a class="image fit"><img src="images/images_mse/image (3).png" alt="" /></a>
 							<a class="image fit"><img src="images/images_mse/image (11).png" alt="" /></a>
-
-
+						</section>
+					</div>
+				</div>					
+				<h3> Results obtained using Weighted Cross-Entropy loss:</h3>
+				<div class="row">
+					<div class="3u">
+						<section>
+							<a class="image fit"><img src="images/images_weighted/image0.png" alt="" /></a>
+							<a class="image fit"><img src="images/images_weighted/image (1).png" alt="" /></a>
+							<a class="image fit"><img src="images/images_weighted/image (2).png" alt="" /></a>
+							<a class="image fit"><img src="images/images_weighted/image16.png" alt="" /></a>
+						</section>
+					</div>
+					<div class="3u">
+						<section>
+							<a class="image fit"><img src="images/images_weighted/image (10).png" alt="" /></a>
+							<a class="image fit"><img src="images/images_weighted/image (4).png" alt="" /></a>
+							<a class="image fit"><img src="images/images_weighted/image (5).png" alt="" /></a>
+							<a class="image fit"><img src="images/images_weighted/image17.png" alt="" /></a>
+						</section>
+					</div>
+					<div class="3u">
+						<section>
+							<a class="image fit"><img src="images/images_weighted/image (6).png" alt="" /></a>
+							<a class="image fit"><img src="images/images_weighted/image (7).png" alt="" /></a>
+							<a class="image fit"><img src="images/images_weighted/image (8).png" alt="" /></a>
+							<a class="image fit"><img src="images/images_weighted/image18.png" alt="" /></a>
+						</section>
+					</div>
+					<div class="3u">
+						<section>
+							<a class="image fit"><img src="images/images_weighted/image (9).png" alt="" /></a>
+							<a class="image fit"><img src="images/images_weighted/image (3).png" alt="" /></a>
+							<a class="image fit"><img src="images/images_weighted/image (11).png" alt="" /></a>
+							<a class="image fit"><img src="images/images_weighted/image20.png" alt="" /></a>
 						</section>
 					</div>
 				</div>					
