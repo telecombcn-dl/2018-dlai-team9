@@ -210,7 +210,7 @@
 							An iteresting idea to improve our results in automatic colorization is to address it using a conditional GAN as it proposed in <a href="https://arxiv.org/abs/1803.05400"> Image Colorization using Generative Adversarial Networks by Kamyar Nazeri, Eric Ng and Mehran Ebrahimi </a> . It is a variant of the DBGAN in which the input of the generator is our greyscale image instead of noise. We have implemented a conditional GAN from scratch using Keras and Tensorflow. <br> <br>
 
 							The generator is our trained baseline CNN with the pre-loaded weights using weighted cross-entropy loss and the flowers dataset. For the discriminator, we have implemented 5x2 convolutional blocks with stride 2 and kernel size of 3. Every convolution layer is followed by batch normalization, a leaky ReLU activation and a max-pooling layer. Finally, there is a Dense layer to map the input to a scalar output, followed by a sigmoid activation layer. The output of the discriminator is the probability of the input being a fake or real chromacity label. The loss is composed by an adversarial loss (MSE) and our colorization loss, the weighted cross-entropy. The following figure summarized the main idea. Sadly, we cannot report valid results yet but the code can be found in our gan branch in github. <br> <br>
-							<a class="image fit"><img src="images/cGAN.jpg" alt="" /></a></p>
+							<a class="image fit"><img src="images/loss_mse.png" alt="" /></a></p>
 						</section>
 					</div>
 				</div>
@@ -264,7 +264,7 @@
 							<p>We decided to train our model with two different loss functions to compare the results. We used the Mean Squared Error and the Weighted Cross Entropy.<br>
 							The results obtained can be found in the last section, we can easily see that the model with the Weighted Cross Entropy performs much better than the Mean Squared Error does. The predicted images with the Weighted Cross Entropy are more similar to the ground truth and more saturated and realistic.
  							</p>
-							<img src="images/mse_mini_batch.png" alt="" style="width:512px;"> 			
+							<img src="images/cGAN.jpg" alt="" style="width:512px;"> 			
 						</section>
 					</div>
 				</div>	
